@@ -1,0 +1,1 @@
+# Satu file per domain (auth.js, member.js, survey.js, ...) — bungkus useApi().
