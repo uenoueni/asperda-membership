@@ -1,0 +1,2 @@
+# Letakkan icon-192.png dan icon-512.png di sini untuk PWA manifest (vite.config.js).
+# Diperlukan agar PWA installable di Android Chrome (skor Lighthouse PWA >= 80).

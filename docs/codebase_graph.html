@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASPERDA Codebase Architecture Graph & Explorer</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(22, 28, 45, 0.45);
+      --bg-card: rgba(30, 41, 59, 0.7);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      
+      --color-frontend: #38bdf8; /* Cyan */
+      --color-frontend-rgb: 56, 189, 248;
+      --color-backend: #ef4444; /* Laravel Red */
+      --color-backend-rgb: 239, 68, 68;
+      --color-db: #f59e0b; /* Amber */
+      --color-db-rgb: 245, 158, 11;
+      --color-integration: #a855f7; /* Purple */
+      --color-integration-rgb: 168, 85, 247;
+      --color-success: #10b981; /* Emerald */
+      
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header styling with premium glowing border */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(11, 15, 25, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 50;
+      position: relative;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-frontend), var(--color-backend), transparent);
+      opacity: 0.6;
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, var(--color-frontend), var(--color-backend));
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: -0.5px;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    }
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: -0.2px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-left: 0.5rem;
+      border-left: 1px solid var(--text-muted);
+      padding-left: 0.5rem;
+    }
+
+    .search-box {
+      position: relative;
+      width: 320px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.5rem 1rem 0.5rem 2.25rem;
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      border-color: var(--color-frontend);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+      background: rgba(30, 41, 59, 0.7);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Main layout panels */
+    .app-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Left panel: File Explorer */
+    .explorer-panel {
+      width: 340px;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .panel-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-secondary);
+    }
+
+    .badge-count {
+      font-size: 0.7rem;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 6px;
+      border-radius: 20px;
+      color: var(--text-muted);
+    }
+
+    .file-tree {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .tree-node {
+      margin-bottom: 2px;
+    }
+
+    .tree-label {
+      display: flex;
+      align-items: center;
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: var(--transition);
+      color: var(--text-secondary);
+      position: relative;
+    }
+
+    .tree-label:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-primary);
+    }
+
+    .tree-label.active {
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .tree-label.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 15%;
+      height: 70%;
+      width: 3px;
+      background: var(--color-frontend);
+      border-radius: 2px;
+    }
+
+    .tree-label.backend.active {
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .tree-label.backend.active::before {
+      background: var(--color-backend);
+    }
+
+    .tree-icon {
+      margin-right: 6px;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .tree-icon.expanded {
+      transform: rotate(90deg);
+    }
+
+    .tree-children {
+      margin-left: 14px;
+      padding-left: 10px;
+      border-left: 1px dotted rgba(255, 255, 255, 0.1);
+      display: none;
+    }
+
+    .tree-children.open {
+      display: block;
+    }
+
+    .file-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-left: auto;
+      background: var(--text-muted);
+    }
+    
+    .file-status-dot.implemented {
+      background: var(--color-success);
+      box-shadow: 0 0 6px var(--color-success);
+    }
+    .file-status-dot.pending {
+      background: var(--color-db);
+    }
+
+    /* Central/Right Panel: Interactive Graph & Visuals */
+    .graph-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 50%, #111827, #0B0F19);
+    }
+
+    .graph-view-tabs {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      display: flex;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      padding: 4px;
+      border-radius: 30px;
+      z-index: 10;
+    }
+
+    .graph-tab {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      border: none;
+      background: transparent;
+    }
+
+    .graph-tab.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .graph-canvas {
+      flex: 1;
+      position: relative;
+      overflow: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 4rem;
+    }
+
+    /* Node graph display */
+    .interactive-graph-svg {
+      width: 100%;
+      height: 100%;
+      min-width: 900px;
+      min-height: 600px;
+    }
+
+    .node-group {
+      cursor: pointer;
+    }
+    
+    .node-bg {
+      fill: #1e293b;
+      stroke: var(--border-color);
+      stroke-width: 2px;
+      rx: 12px;
+      transition: var(--transition);
+    }
+    
+    .node-group:hover .node-bg {
+      stroke-width: 3px;
+      filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.3));
+    }
+    
+    .node-group.active .node-bg {
+      stroke: var(--accent-color);
+      stroke-width: 3px;
+      fill: rgba(30, 41, 59, 0.95);
+      filter: drop-shadow(0 0 12px rgba(var(--accent-rgb), 0.5));
+    }
+
+    .node-icon-bg {
+      fill: rgba(255, 255, 255, 0.05);
+      rx: 6px;
+    }
+
+    .node-title {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      fill: var(--text-primary);
+    }
+    
+    .node-subtitle {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      fill: var(--text-muted);
+    }
+
+    .node-badge {
+      font-family: var(--font-sans);
+      font-size: 9px;
+      font-weight: 600;
+      fill: var(--text-primary);
+    }
+
+    .link-path {
+      fill: none;
+      stroke-width: 2px;
+      transition: var(--transition);
+    }
+
+    .link-path.highlighted {
+      stroke-width: 3.5px;
+      stroke-dasharray: 6 3;
+      animation: dash 30s linear infinite;
+    }
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -1000;
+      }
+    }
+
+    /* Right Sidebar: Details & Metadata */
+    .details-sidebar {
+      width: 380px;
+      background: var(--bg-panel);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+      z-index: 20;
+    }
+
+    .details-title-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .details-layer-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .details-layer-badge.frontend {
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--color-frontend);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    .details-layer-badge.backend {
+      background: rgba(239, 68, 68, 0.12);
+      color: var(--color-backend);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    .details-layer-badge.shared {
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--color-db);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .details-file-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      line-height: 1.25;
+    }
+
+    .details-file-path {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      word-break: break-all;
+    }
+
+    .details-status-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.5rem 0.75rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+
+    .status-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .status-pill.implemented {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--color-success);
+    }
+
+    .status-pill.pending {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--color-db);
+    }
+
+    .details-section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .details-section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+
+    .details-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Rules & Conventions card */
+    .rules-card {
+      background: rgba(56, 189, 248, 0.04);
+      border: 1px solid rgba(56, 189, 248, 0.15);
+      border-radius: 8px;
+      padding: 0.88rem;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+
+    .rules-card.backend {
+      background: rgba(239, 68, 68, 0.03);
+      border-color: rgba(239, 68, 68, 0.15);
+    }
+
+    .rules-bullet {
+      margin-left: 1.1rem;
+      margin-top: 0.35rem;
+    }
+
+    .code-snippet-box {
+      background: #060913;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      overflow-x: auto;
+      color: #9cdcfe;
+      line-height: 1.4;
+      white-space: pre;
+    }
+
+    /* Legend bar bottom */
+    .legend-bar {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 1.5rem;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 16px;
+      display: flex;
+      gap: 16px;
+      z-index: 10;
+      font-size: 0.75rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+    }
+
+    .legend-color {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    .legend-color.frontend { background-color: var(--color-frontend); }
+    .legend-color.backend { background-color: var(--color-backend); }
+    .legend-color.db { background-color: var(--color-db); }
+    .legend-color.integration { background-color: var(--color-integration); }
+
+    /* Empty state styling */
+    .empty-sidebar-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      text-align: center;
+      color: var(--text-muted);
+      gap: 1rem;
+    }
+
+    .empty-state-icon {
+      opacity: 0.3;
+      animation: pulse 3s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.05); }
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand-container">
+      <div class="logo-badge">A</div>
+      <div>
+        <div style="display: flex; align-items: center;">
+          <span class="brand-title">ASPERDA</span>
+          <span class="brand-subtitle">Interactive Codebase Graph</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="search-box">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" class="search-input" id="searchBar" placeholder="Cari file, folder, atau modul...">
+    </div>
+  </header>
+
+  <!-- App Wrapper -->
+  <div class="app-container">
+    
+    <!-- Left panel: File Explorer -->
+    <div class="explorer-panel">
+      <div class="panel-header">
+        <span class="panel-title">Workspace Explorer</span>
+        <span class="badge-count" id="fileCountBadge">19 items</span>
+      </div>
+      <div class="file-tree" id="fileTreeContainer">
+        <!-- JS will populate the tree -->
+      </div>
+    </div>
+
+    <!-- Central: Interactive Canvas -->
+    <div class="graph-panel">
+      <!-- Tabs -->
+      <div class="graph-view-tabs">
+        <button class="graph-tab active" onclick="switchView('dependency')">Arsitektur & Dependency</button>
+        <button class="graph-tab" onclick="switchView('dataflow')">Alur Aliran Data</button>
+      </div>
+
+      <!-- Graph Canvas -->
+      <div class="graph-canvas">
+        <svg class="interactive-graph-svg" id="graphSvg" viewBox="0 0 1000 650">
+          <defs>
+            <marker id="arrow-blue" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="#38bdf8"/>
+            </marker>
+            <marker id="arrow-red" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="#ef4444"/>
+            </marker>
+            <marker id="arrow-amber" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="#f59e0b"/>
+            </marker>
+            <marker id="arrow-purple" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="#a855f7"/>
+            </marker>
+            <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+
+          <!-- Dynamic Graph SVG contents populated by JS -->
+          <g id="linksGroup"></g>
+          <g id="nodesGroup"></g>
+        </svg>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend-bar">
+        <div class="legend-item">
+          <div class="legend-color frontend"></div>
+          <span>Frontend Layer (Vue 3)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color backend"></div>
+          <span>Backend Layer (Laravel 11)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color db"></div>
+          <span>Database & Enums</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color integration"></div>
+          <span>Integrasi & Jobs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right panel: Details Sidebar -->
+    <div class="details-sidebar" id="detailsSidebar">
+      <div class="empty-sidebar-state" id="emptySidebarState">
+        <svg class="empty-state-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <p>Pilih file di Explorer atau klik node di dalam Canvas untuk melihat detail arsitektur, standar coding, dan kode sumber.</p>
+      </div>
+      
+      <div id="detailsContent" style="display: none;">
+        <div class="details-title-section">
+          <span class="details-layer-badge" id="detailsLayerBadge">layer</span>
+          <h2 class="details-file-title" id="detailsTitle">FileName.vue</h2>
+          <div class="details-file-path" id="detailsPath">frontend/src/views/HomeView.vue</div>
+        </div>
+
+        <div class="details-status-row">
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Status Implementasi:</span>
+          <span class="status-pill" id="detailsStatusPill">Selesai</span>
+        </div>
+
+        <div class="details-section-title">Deskripsi Modul</div>
+        <p class="details-desc" id="detailsDesc">Deskripsi file.</p>
+
+        <div id="detailsRulesSection">
+          <div class="details-section-title">Aturan & Konvensi</div>
+          <div class="rules-card" id="detailsRulesCard">
+            Aturan coding di sini.
+          </div>
+        </div>
+
+        <div id="detailsCodeSection">
+          <div class="details-section-title">Struktur / Potongan Kode</div>
+          <div class="code-snippet-box" id="detailsCodeSnippet">Code</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JavaScript for Data & Interactivity -->
+  <script>
+    // 1. Files & Directories Database
+    const codebaseData = {
+      // Directories & Files structure representing app & frontend
+      'app': {
+        name: 'app',
+        type: 'dir',
+        path: 'app',
+        layer: 'backend',
+        status: 'implemented',
+        children: {
+          'Enums': {
+            name: 'Enums',
+            type: 'dir',
+            path: 'app/Enums',
+            layer: 'backend',
+            status: 'implemented',
+            children: {
+              'MemberStatus.php': {
+                name: 'MemberStatus.php',
+                type: 'file',
+                path: 'app/Enums/MemberStatus.php',
+                layer: 'backend',
+                status: 'implemented',
+                desc: 'Definisi status keanggotaan (pending_verification, waiting_survey, active, rejected, expired).',
+                rules: '<b>Mirror Satu Sumber:</b> Wajib sama persis dengan frontend <code>src/constants/enums.js</code>. Jangan di-hardcode di controller/view!',
+                code: 'namespace App\\Enums;\n\nenum MemberStatus: string {\n    case PENDING_VERIFICATION = \'pending_verification\';\n    case WAITING_SURVEY = \'waiting_survey\';\n    case ACTIVE = \'active\';\n    case REJECTED = \'rejected\';\n    case EXPIRED = \'expired\';\n}'
+              },
+              'PaymentStatus.php': {
+                name: 'PaymentStatus.php',
+                type: 'file',
+                path: 'app/Enums/PaymentStatus.php',
+                layer: 'backend',
+                status: 'implemented',
+                desc: 'Definisi status pembayaran Midtrans (pending, paid, failed, expired, refunded).',
+                rules: 'Menghubungkan notifikasi webhook Midtrans langsung dengan status keaktifan member.',
+                code: 'enum PaymentStatus: string {\n    case PENDING = \'pending\';\n    case PAID = \'paid\';\n    case FAILED = \'failed\';\n    case EXPIRED = \'expired\';\n    case REFUNDED = \'refunded\';\n}'
+              },
+              'UserRole.php': {
+                name: 'UserRole.php',
+                type: 'file',
+                path: 'app/Enums/UserRole.php',
+                layer: 'backend',
+                status: 'implemented',
+                desc: 'Definisi tingkat otorisasi pengguna (super_admin, dpp, dpd, dpc, member).',
+                rules: 'Digunakan oleh Middleware EnsureUserHasRole untuk pembatasan wilayah (RBAC).',
+                code: 'enum UserRole: string {\n    case SUPER_ADMIN = \'super_admin\';\n    case DPP = \'dpp\';\n    case DPD = \'dpd\';\n    case DPC = \'dpc\';\n    case MEMBER = \'member\';\n}'
+              }
+            }
+          },
+          'Http': {
+            name: 'Http',
+            type: 'dir',
+            path: 'app/Http',
+            layer: 'backend',
+            status: 'implemented',
+            children: {
+              'Controllers': {
+                name: 'Controllers',
+                type: 'dir',
+                path: 'app/Http/Controllers',
+                layer: 'backend',
+                status: 'implemented',
+                children: {
+                  'Api': {
+                    name: 'Api',
+                    type: 'dir',
+                    path: 'app/Http/Controllers/Api',
+                    layer: 'backend',
+                    status: 'implemented',
+                    children: {
+                      'V1': {
+                        name: 'V1',
+                        type: 'dir',
+                        path: 'app/Http/Controllers/Api/V1',
+                        layer: 'backend',
+                        status: 'implemented',
+                        children: {
+                          'BaseController.php': {
+                            name: 'BaseController.php',
+                            type: 'file',
+                            path: 'app/Http/Controllers/Api/V1/BaseController.php',
+                            layer: 'backend',
+                            status: 'implemented',
+                            desc: 'Controller dasar untuk semua API response. Menyediakan format standar envelope.',
+                            rules: '<b>Envelope API Standard:</b> Semua API response wajib mengembalikan envelope { success, data, message, errors?, meta? }. Gunakan helper method <code>sendResponse()</code> atau <code>sendError()</code>.',
+                            code: 'class BaseController extends Controller {\n    public function sendResponse($result, $message, $code = 200) {\n        return response()->json([\n            \'success\' => true,\n            \'message\' => $message,\n            \'data\'    => $result\n        ], $code);\n    }\n}'
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              'Middleware': {
+                name: 'Middleware',
+                type: 'dir',
+                path: 'app/Http/Middleware',
+                layer: 'backend',
+                status: 'implemented',
+                children: {
+                  'EnsureUserHasRole.php': {
+                    name: 'EnsureUserHasRole.php',
+                    type: 'file',
+                    path: 'app/Http/Middleware/EnsureUserHasRole.php',
+                    layer: 'backend',
+                    status: 'implemented',
+                    desc: 'Middleware untuk filter otorisasi berdasarkan UserRole.',
+                    rules: 'Digunakan di routes/api.php dengan pattern: <code>middleware(\'role:dpc,dpd,dpp\')</code>.',
+                    code: 'public function handle(Request $request, Closure $next, ...$roles) {\n    if (!in_array($request->user()->role->value, $roles)) {\n        throw new AccessDeniedHttpException();\n    }\n    return $next($request);\n}'
+                  }
+                }
+              }
+            }
+          },
+          'Jobs': {
+            name: 'Jobs',
+            type: 'dir',
+            path: 'app/Jobs',
+            layer: 'backend',
+            status: 'pending',
+            desc: 'Direktori untuk Asynchronous Queue Jobs (mis. SendEmailVerificationJob, SendPaymentReminderJob, EscalateSurveyJob, GenerateCertificateJob).',
+            rules: '<b>Queue Rule:</b> Operasi yang memakan waktu lama (seperti pengiriman email, request ke pihak ketiga, generation PDF) wajib diproses asinkronus melalui Queue Jobs. Jangan dijalankan langsung di controller!',
+            code: '// ⏳ Belum diisi (Scaffolded dengan .gitkeep)'
+          },
+          'Policies': {
+            name: 'Policies',
+            type: 'dir',
+            path: 'app/Policies',
+            layer: 'backend',
+            status: 'pending',
+            desc: 'Tempat menaruh file Policy Laravel untuk hak akses database berbasis wilayah.',
+            rules: '<b>RBAC Wilayah Rule:</b> Otorisasi tingkat record (mis. DPC Bandung hanya boleh melihat member wilayah Bandung) wajib diletakkan di dalam Laravel Policy, dipanggil menggunakan <code>$this->authorize()</code> di controller. Jangan ditulis hardcode di controller!',
+            code: '// ⏳ Belum diisi (Scaffolded dengan .gitkeep)'
+          },
+          'Models': {
+            name: 'Models',
+            type: 'dir',
+            path: 'app/Models',
+            layer: 'backend',
+            status: 'implemented',
+            children: {
+              'User.php': {
+                name: 'User.php',
+                type: 'file',
+                path: 'app/Models/User.php',
+                layer: 'backend',
+                status: 'implemented',
+                desc: 'Model User Laravel 11 yang merepresentasikan calon anggota, anggota aktif, dan pengurus.',
+                rules: 'Menampung casting role ke Enum <code>UserRole</code> serta enkripsi data sensitif.',
+                code: 'protected $casts = [\n    \'role\' => \\App\\Enums\\UserRole::class,\n    \'password\' => \'hashed\',\n];'
+              }
+            }
+          }
+        }
+      },
+      'frontend': {
+        name: 'frontend',
+        type: 'dir',
+        path: 'frontend',
+        layer: 'frontend',
+        status: 'implemented',
+        children: {
+          'src': {
+            name: 'src',
+            type: 'dir',
+            path: 'frontend/src',
+            layer: 'frontend',
+            status: 'implemented',
+            children: {
+              'api': {
+                name: 'api',
+                type: 'dir',
+                path: 'frontend/src/api',
+                layer: 'frontend',
+                status: 'implemented',
+                children: {
+                  'auth.js': {
+                    name: 'auth.js',
+                    type: 'file',
+                    path: 'frontend/src/api/auth.js',
+                    layer: 'frontend',
+                    status: 'implemented',
+                    desc: 'Modul API frontend khusus untuk fungsi autentikasi & pendaftaran.',
+                    rules: 'Memanfaatkan helper <code>useApi</code>. Menghindari pemakaian direct axios.',
+                    code: 'import { useApi } from \'@/composables/useApi\'\n\nexport function useAuthApi() {\n  const api = useApi()\n  return {\n    register: (payload) => api.post(\'/auth/register\', payload),\n  }\n}'
+                  }
+                }
+              },
+              'components': {
+                name: 'components',
+                type: 'dir',
+                path: 'frontend/src/components',
+                layer: 'frontend',
+                status: 'implemented',
+                children: {
+                  'form': {
+                    name: 'form',
+                    type: 'dir',
+                    path: 'frontend/src/components/form',
+                    layer: 'frontend',
+                    status: 'implemented',
+                    children: {
+                      'MemberRegisterForm.vue': {
+                        name: 'MemberRegisterForm.vue',
+                        type: 'file',
+                        path: 'frontend/src/components/form/MemberRegisterForm.vue',
+                        layer: 'frontend',
+                        status: 'implemented',
+                        desc: 'Form pendaftaran anggota mengumpulkan data dasar, data perusahaan, serta rekening bank untuk refund otomatis.',
+                        rules: 'Harus me-map error validation dari envelope standard Laravel backend dan menampilkan pesan error sesuai field.',
+                        code: '<script setup>\nimport { useAuthApi } from \'@/api/auth\'\nconst authApi = useAuthApi()\n// ...\nasync function submit() {\n  const { ok, error } = await authApi.register({ ...form })\n  if (ok) { /* Cek email */ }\n}\n</script>'
+                      }
+                    }
+                  }
+                }
+              },
+              'composables': {
+                name: 'composables',
+                type: 'dir',
+                path: 'frontend/src/composables',
+                layer: 'frontend',
+                status: 'implemented',
+                children: {
+                  'useApi.js': {
+                    name: 'useApi.js',
+                    type: 'file',
+                    path: 'frontend/src/composables/useApi.js',
+                    layer: 'frontend',
+                    status: 'implemented',
+                    desc: 'Composable pusat untuk request HTTP. Mengambil environment base URL dan menyisipkan credentials cookies (Sanctum SPA).',
+                    rules: '<b>WAJIB:</b> Seluruh component frontend WAJIB menggunakan <code>useApi()</code> untuk request ke Laravel. Dilarang keras memanggil fetch atau axios langsung!',
+                    code: 'export function useApi() {\n  async function request(method, endpoint, body = null) {\n    const res = await fetch(`${BASE_URL}${endpoint}`, config);\n    // ...\n    return { ok: res.ok, data: json.data, error: json.error };\n  }\n  return { get, post, put, del }\n}'
+                  },
+                  'useWilayah.js': {
+                    name: 'useWilayah.js',
+                    type: 'file',
+                    path: 'frontend/src/composables/useWilayah.js',
+                    layer: 'frontend',
+                    status: 'implemented',
+                    desc: 'Composable untuk memuat data wilayah dinamis (Provinsi, Kab/Kota, Kecamatan) secara lazy-loaded.',
+                    rules: '<b>Cascade Wilayah Rule:</b> Dropdown wilayah wajib lazy-loaded (load bertahap: pilih provinsi baru load kota, pilih kota baru load kecamatan). Dilarang mengimpor data JSON statis besar langsung ke bundle.',
+                    code: 'export function useWilayah() {\n  const loadProvinsi = () => api.get(\'/wilayah/provinsi\');\n  const loadKota = (provId) => api.get(`/wilayah/kota?provinsi_id=${provId}`);\n  return { loadProvinsi, loadKota }\n}'
+                  }
+                }
+              },
+              'constants': {
+                name: 'constants',
+                type: 'dir',
+                path: 'frontend/src/constants',
+                layer: 'frontend',
+                status: 'implemented',
+                children: {
+                  'enums.js': {
+                    name: 'enums.js',
+                    type: 'file',
+                    path: 'frontend/src/constants/enums.js',
+                    layer: 'frontend',
+                    status: 'implemented',
+                    desc: 'Definisi Object.freeze() konstan yang mencerminkan Enum di backend.',
+                    rules: 'Satu sumber kebenaran. Jangan hardcode string status (seperti "active", "pending") di Vue templates. Wajib import dari file ini.',
+                    code: 'export const MemberStatus = Object.freeze({\n  PENDING_VERIFICATION: \'pending_verification\',\n  WAITING_SURVEY: \'waiting_survey\',\n  ACTIVE: \'active\',\n  REJECTED: \'rejected\',\n  EXPIRED: \'expired\',\n})'
+                  }
+                }
+              },
+              'views': {
+                name: 'views',
+                type: 'dir',
+                path: 'frontend/src/views',
+                layer: 'frontend',
+                status: 'implemented',
+                children: {
+                  'HomeView.vue': {
+                    name: 'HomeView.vue',
+                    type: 'file',
+                    path: 'frontend/src/views/HomeView.vue',
+                    layer: 'frontend',
+                    status: 'implemented',
+                    desc: 'Landing page premium keanggotaan ASPERDA. Memuat hak/kewajiban, data keaktifan organisasi, dan meng-embed modal pendaftaran.',
+                    rules: 'Wajib menggunakan responsive layout & transition halus saat form ditampilkan.',
+                    code: '<template>\n  <div class="page">\n    <header class="nav">...</header>\n    <MemberRegisterForm />\n  </div>\n</template>'
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      'routes': {
+        name: 'routes',
+        type: 'dir',
+        path: 'routes',
+        layer: 'backend',
+        status: 'implemented',
+        children: {
+          'api.php': {
+            name: 'api.php',
+            type: 'file',
+            path: 'routes/api.php',
+            layer: 'backend',
+            status: 'implemented',
+            desc: 'Routing utama untuk service REST API. Terbagi menjadi modul public routes (guest) dan authenticated routes.',
+            rules: 'Seluruh endpoint dibungkus prefix /api/v1. Otorisasi dilindungi Sanctum cookie middleware.',
+            code: 'Route::prefix(\'v1\')->group(function () {\n    Route::get(\'/ping\', [PingController::class, \'ping\']);\n    Route::middleware([\'auth:sanctum\', \'verified\'])->group(function () {\n        Route::get(\'/auth/me\', ...);\n    });\n});'
+          }
+        }
+      }
+    };
+
+    // 2. Node Graph Coordinates & Data
+    // Coordinates representing how components interact in ASPERDA
+    const nodes = [
+      // Frontend Layer Nodes
+      { id: 'view_home', label: 'HomeView.vue', type: 'frontend', x: 100, y: 150, desc: 'Landing Page', accent: 'var(--color-frontend)', accentRgb: 'var(--color-frontend-rgb)', icon: '🏠', file: 'frontend/src/views/HomeView.vue', isDir: false },
+      { id: 'form_register', label: 'MemberRegisterForm.vue', type: 'frontend', x: 100, y: 320, desc: 'Form Registrasi', accent: 'var(--color-frontend)', accentRgb: 'var(--color-frontend-rgb)', icon: '📝', file: 'frontend/src/components/form/MemberRegisterForm.vue', isDir: false },
+      { id: 'api_auth', label: 'api/auth.js', type: 'frontend', x: 260, y: 320, desc: 'Auth API Wrapper', accent: 'var(--color-frontend)', accentRgb: 'var(--color-frontend-rgb)', icon: '🔌', file: 'frontend/src/api/auth.js', isDir: false },
+      { id: 'comp_api', label: 'useApi.js', type: 'frontend', x: 420, y: 240, desc: 'API Engine', accent: 'var(--color-frontend)', accentRgb: 'var(--color-frontend-rgb)', icon: '⚙️', file: 'frontend/src/composables/useApi.js', isDir: false },
+      { id: 'comp_wilayah', label: 'useWilayah.js', type: 'frontend', x: 260, y: 150, desc: 'Lazy Load Wilayah', accent: 'var(--color-frontend)', accentRgb: 'var(--color-frontend-rgb)', icon: '🗺️', file: 'frontend/src/composables/useWilayah.js', isDir: false },
+      
+      // Backend Router & Controllers
+      { id: 'laravel_routes', label: 'routes/api.php', type: 'backend', x: 580, y: 240, desc: 'Endpoint Router (v1)', accent: 'var(--color-backend)', accentRgb: 'var(--color-backend-rgb)', icon: '🛣️', file: 'routes/api.php', isDir: false },
+      { id: 'laravel_kernel', label: 'bootstrap/app.php', type: 'backend', x: 580, y: 80, desc: 'Sanctum / Exceptions', accent: 'var(--color-backend)', accentRgb: 'var(--color-backend-rgb)', icon: '🔧', file: 'bootstrap/app.php', isDir: false },
+      { id: 'base_controller', label: 'BaseController.php', type: 'backend', x: 740, y: 150, desc: 'Envelope Controller', accent: 'var(--color-backend)', accentRgb: 'var(--color-backend-rgb)', icon: '🎮', file: 'app/Http/Controllers/Api/V1/BaseController.php', isDir: false },
+      { id: 'role_middleware', label: 'EnsureUserHasRole.php', type: 'backend', x: 740, y: 280, desc: 'RBAC Middleware', accent: 'var(--color-backend)', accentRgb: 'var(--color-backend-rgb)', icon: '🛡️', file: 'app/Http/Middleware/EnsureUserHasRole.php', isDir: false },
+
+      // Database & Helpers
+      { id: 'enum_files', label: 'app/Enums/*', type: 'db', x: 900, y: 150, desc: 'Enums Keanggotaan', accent: 'var(--color-db)', accentRgb: 'var(--color-db-rgb)', icon: '📋', file: 'app/Enums/MemberStatus.php', isDir: false },
+      { id: 'model_user', label: 'User.php', type: 'db', x: 900, y: 320, desc: 'User Model', accent: 'var(--color-db)', accentRgb: 'var(--color-db-rgb)', icon: '👤', file: 'app/Models/User.php', isDir: false },
+      { id: 'jobs_queue', label: 'app/Jobs/*', type: 'integration', x: 900, y: 460, desc: 'Async Queue Jobs', accent: 'var(--color-integration)', accentRgb: 'var(--color-integration-rgb)', icon: '⏳', file: 'app/Jobs', isDir: true },
+      { id: 'policies_rbac', label: 'app/Policies/*', type: 'backend', x: 740, y: 410, desc: 'Otorisasi Wilayah', accent: 'var(--color-backend)', accentRgb: 'var(--color-backend-rgb)', icon: '🔒', file: 'app/Policies', isDir: true }
+    ];
+
+    // Node links (Connections)
+    const links = [
+      { source: 'view_home', target: 'form_register', label: 'render modal', color: 'var(--color-frontend)', marker: 'arrow-blue' },
+      { source: 'form_register', target: 'api_auth', label: 'register()', color: 'var(--color-frontend)', marker: 'arrow-blue' },
+      { source: 'form_register', target: 'comp_wilayah', label: 'lazy load wilayah', color: 'var(--color-frontend)', marker: 'arrow-blue' },
+      { source: 'api_auth', target: 'comp_api', label: 'HTTP client call', color: 'var(--color-frontend)', marker: 'arrow-blue' },
+      { source: 'comp_wilayah', target: 'comp_api', label: 'fetch request', color: 'var(--color-frontend)', marker: 'arrow-blue' },
+      
+      // Frontend-Backend Boundary
+      { source: 'comp_api', target: 'laravel_routes', label: 'API /api/v1/auth/register', color: 'var(--color-integration)', marker: 'arrow-purple', highlight: true },
+      { source: 'laravel_kernel', target: 'laravel_routes', label: 'stateful API auth', color: 'var(--color-backend)', marker: 'arrow-red' },
+      
+      // Backend Internal
+      { source: 'laravel_routes', target: 'base_controller', label: 'route to', color: 'var(--color-backend)', marker: 'arrow-red' },
+      { source: 'laravel_routes', target: 'role_middleware', label: 'intercept RBAC', color: 'var(--color-backend)', marker: 'arrow-red' },
+      { source: 'base_controller', target: 'enum_files', label: 'validate values', color: 'var(--color-db)', marker: 'arrow-amber' },
+      { source: 'base_controller', target: 'model_user', label: 'create / update User', color: 'var(--color-db)', marker: 'arrow-amber' },
+      { source: 'role_middleware', target: 'policies_rbac', label: 'scope policy', color: 'var(--color-backend)', marker: 'arrow-red' },
+      { source: 'base_controller', target: 'jobs_queue', label: 'dispatch async', color: 'var(--color-integration)', marker: 'arrow-purple' }
+    ];
+
+    // Dataflow View nodes (Aliran data alur registrasi)
+    const dataflowNodes = [
+      { id: 'df_input', label: '1. User Input Form', type: 'frontend', x: 80, y: 300, desc: 'HomeView > MemberRegisterForm', accent: 'var(--color-frontend)', accentRgb: 'var(--color-frontend-rgb)', icon: '📝', file: 'frontend/src/components/form/MemberRegisterForm.vue', isDir: false },
+      { id: 'df_req', label: '2. useApi Payload', type: 'frontend', x: 260, y: 300, desc: 'fetch cookie-based payload', accent: 'var(--color-frontend)', accentRgb: 'var(--color-frontend-rgb)', icon: '📦', file: 'frontend/src/composables/useApi.js', isDir: false },
+      { id: 'df_route', label: '3. Routes Router', type: 'backend', x: 440, y: 300, desc: 'Laravel API v1 group', accent: 'var(--color-backend)', accentRgb: 'var(--color-backend-rgb)', icon: '🛣️', file: 'routes/api.php', isDir: false },
+      { id: 'df_validate', label: '4. Form Validation', type: 'backend', x: 620, y: 200, desc: 'BaseController standard exception', accent: 'var(--color-backend)', accentRgb: 'var(--color-backend-rgb)', icon: '🛡️', file: 'app/Http/Controllers/Api/V1/BaseController.php', isDir: false },
+      { id: 'df_db', label: '5. Database Persistent', type: 'db', x: 800, y: 200, desc: 'User & Member model update', accent: 'var(--color-db)', accentRgb: 'var(--color-db-rgb)', icon: '💾', file: 'app/Models/User.php', isDir: false },
+      { id: 'df_verify_job', label: '6. Dispatch Verify Job', type: 'integration', x: 800, y: 400, desc: 'SendEmailVerificationJob', accent: 'var(--color-integration)', accentRgb: 'var(--color-integration-rgb)', icon: '📧', file: 'app/Jobs', isDir: true },
+      { id: 'df_envelope', label: '7. Base API Envelope', type: 'backend', x: 620, y: 400, desc: '{success, data, message}', accent: 'var(--color-backend)', accentRgb: 'var(--color-backend-rgb)', icon: '✉️', file: 'app/Http/Controllers/Api/V1/BaseController.php', isDir: false }
+    ];
+
+    const dataflowLinks = [
+      { source: 'df_input', target: 'df_req', label: 'validate client', color: 'var(--color-frontend)', marker: 'arrow-blue' },
+      { source: 'df_req', target: 'df_route', label: 'POST /v1/auth/register', color: 'var(--color-integration)', marker: 'arrow-purple', highlight: true },
+      { source: 'df_route', target: 'df_validate', label: 'route dispatch', color: 'var(--color-backend)', marker: 'arrow-red' },
+      { source: 'df_validate', target: 'df_db', label: 'validated -> save', color: 'var(--color-db)', marker: 'arrow-amber' },
+      { source: 'df_db', target: 'df_verify_job', label: 'dispatch verified event', color: 'var(--color-integration)', marker: 'arrow-purple' },
+      { source: 'df_verify_job', target: 'df_envelope', label: 'on queue success', color: 'var(--color-backend)', marker: 'arrow-red' },
+      { source: 'df_validate', target: 'df_envelope', label: 'on fail (throw 422)', color: 'var(--color-backend)', marker: 'arrow-red' },
+      { source: 'df_envelope', target: 'df_input', label: 'display success / field error message', color: 'var(--color-frontend)', marker: 'arrow-blue' }
+    ];
+
+    // Global state
+    let activeView = 'dependency'; // 'dependency' or 'dataflow'
+    let selectedFile = null;
+
+    // 3. Populate File Tree Recursively
+    function buildFileTreeHtml(node, parentElement, depth = 0) {
+      Object.keys(node).forEach(key => {
+        const item = node[key];
+        const treeNode = document.createElement('div');
+        treeNode.className = 'tree-node';
+        
+        const label = document.createElement('div');
+        label.className = `tree-label ${item.layer}`;
+        label.style.paddingLeft = `${depth * 14 + 8}px`;
+        
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'tree-icon';
+        
+        const textSpan = document.createElement('span');
+        textSpan.className = 'tree-text';
+        textSpan.innerText = item.name;
+
+        if (item.type === 'dir') {
+          // Folder icon
+          iconSpan.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`;
+          label.appendChild(iconSpan);
+          label.appendChild(textSpan);
+          treeNode.appendChild(label);
+          
+          const childrenContainer = document.createElement('div');
+          childrenContainer.className = 'tree-children';
+          
+          // Click folder to expand/collapse
+          label.addEventListener('click', (e) => {
+            e.stopPropagation();
+            childrenContainer.classList.toggle('open');
+            iconSpan.classList.toggle('expanded');
+          });
+
+          // Automatically expand roots
+          if (depth === 0) {
+            childrenContainer.classList.add('open');
+            iconSpan.classList.add('expanded');
+          }
+
+          buildFileTreeHtml(item.children || {}, childrenContainer, depth + 1);
+          treeNode.appendChild(childrenContainer);
+        } else {
+          // File icon
+          iconSpan.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>`;
+          
+          const statusDot = document.createElement('span');
+          statusDot.className = `file-status-dot ${item.status}`;
+
+          label.appendChild(iconSpan);
+          label.appendChild(textSpan);
+          label.appendChild(statusDot);
+          treeNode.appendChild(label);
+
+          // Click file to display details
+          label.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Remove active classes
+            document.querySelectorAll('.tree-label').forEach(el => el.classList.remove('active'));
+            label.classList.add('active');
+            displayDetails(item);
+            highlightNodeInGraph(item.path);
+          });
+        }
+
+        parentElement.appendChild(treeNode);
+      });
+    }
+
+    // 4. Display Sidebar Details
+    function displayDetails(fileItem) {
+      selectedFile = fileItem;
+      document.getElementById('emptySidebarState').style.display = 'none';
+      document.getElementById('detailsContent').style.display = 'block';
+
+      // Set Layer Badge
+      const badge = document.getElementById('detailsLayerBadge');
+      badge.innerText = fileItem.layer;
+      badge.className = `details-layer-badge ${fileItem.layer}`;
+
+      // Titles
+      document.getElementById('detailsTitle').innerText = fileItem.name;
+      document.getElementById('detailsPath').innerText = fileItem.path;
+
+      // Status
+      const statusPill = document.getElementById('detailsStatusPill');
+      statusPill.className = `status-pill ${fileItem.status}`;
+      statusPill.innerText = fileItem.status === 'implemented' ? '✅ Implemented' : '⏳ Pending / Planned';
+
+      // Description
+      document.getElementById('detailsDesc').innerHTML = fileItem.desc || 'Belum ada penjelasan teknis untuk modul ini.';
+
+      // Rules
+      const rulesSection = document.getElementById('detailsRulesSection');
+      if (fileItem.rules) {
+        rulesSection.style.display = 'block';
+        document.getElementById('detailsRulesCard').innerHTML = fileItem.rules;
+        document.getElementById('detailsRulesCard').className = `rules-card ${fileItem.layer}`;
+      } else {
+        rulesSection.style.display = 'none';
+      }
+
+      // Code
+      const codeSection = document.getElementById('detailsCodeSection');
+      if (fileItem.code) {
+        codeSection.style.display = 'block';
+        document.getElementById('detailsCodeSnippet').innerText = fileItem.code;
+      } else {
+        codeSection.style.display = 'none';
+      }
+    }
+
+    // 5. Build SVG Nodes & Connections
+    function renderGraph() {
+      const svg = document.getElementById('graphSvg');
+      const nodesGroup = document.getElementById('nodesGroup');
+      const linksGroup = document.getElementById('linksGroup');
+
+      // Clear previous elements
+      nodesGroup.innerHTML = '';
+      linksGroup.innerHTML = '';
+
+      const currentNodes = activeView === 'dependency' ? nodes : dataflowNodes;
+      const currentLinks = activeView === 'dependency' ? links : dataflowLinks;
+
+      // Make a fast map for node lookups
+      const nodeMap = {};
+      currentNodes.forEach(node => {
+        nodeMap[node.id] = node;
+      });
+
+      // Render Connections (Links)
+      currentLinks.forEach(link => {
+        const sourceNode = nodeMap[link.source];
+        const targetNode = nodeMap[link.target];
+        if (!sourceNode || !targetNode) return;
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const x1 = sourceNode.x;
+        const y1 = sourceNode.y;
+        const x2 = targetNode.x;
+        const y2 = targetNode.y;
+
+        // Draw curved/offset connections
+        let d = '';
+        if (Math.abs(y1 - y2) < 20) {
+          // Horizontal line
+          d = `M ${x1} ${y1} L ${x2} ${y2}`;
+        } else {
+          // Curved flow
+          const controlOffset = Math.abs(x2 - x1) * 0.4;
+          d = `M ${x1} ${y1} C ${x1 + controlOffset} ${y1}, ${x2 - controlOffset} ${y2}, ${x2} ${y2}`;
+        }
+
+        path.setAttribute('d', d);
+        path.setAttribute('class', `link-path ${link.highlight ? 'highlighted' : ''}`);
+        path.setAttribute('stroke', link.color);
+        path.setAttribute('marker-end', `url(#${link.marker})`);
+        
+        // Glow effect for highlighted transitions
+        if (link.highlight) {
+          path.setAttribute('filter', 'url(#glow-blue)');
+        }
+
+        linksGroup.appendChild(path);
+      });
+
+      // Render Nodes
+      currentNodes.forEach(node => {
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('class', 'node-group');
+        g.setAttribute('id', `node-${node.id}`);
+        g.setAttribute('style', `--accent-color: ${node.accent}; --accent-rgb: ${node.accentRgb}`);
+
+        // Background card rectangle
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', node.x - 75);
+        rect.setAttribute('y', node.y - 30);
+        rect.setAttribute('width', 150);
+        rect.setAttribute('height', 60);
+        rect.setAttribute('class', 'node-bg');
+        g.appendChild(rect);
+
+        // Glow badge icon bg
+        const iconBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        iconBg.setAttribute('x', node.x - 65);
+        iconBg.setAttribute('y', node.y - 20);
+        iconBg.setAttribute('width', 24);
+        iconBg.setAttribute('height', 24);
+        iconBg.setAttribute('class', 'node-icon-bg');
+        g.appendChild(iconBg);
+
+        // Icon text
+        const iconText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        iconText.setAttribute('x', node.x - 53);
+        iconText.setAttribute('y', node.y - 4);
+        iconText.setAttribute('text-anchor', 'middle');
+        iconText.setAttribute('font-size', '14');
+        iconText.textContent = node.icon;
+        g.appendChild(iconText);
+
+        // File Title (Truncated if needed)
+        const titleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        titleText.setAttribute('x', node.x - 32);
+        titleText.setAttribute('y', node.y - 8);
+        titleText.setAttribute('class', 'node-title');
+        titleText.textContent = node.label.length > 15 ? node.label.slice(0, 13) + '..' : node.label;
+        g.appendChild(titleText);
+
+        // Subtitle
+        const subText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        subText.setAttribute('x', node.x - 32);
+        subText.setAttribute('y', node.y + 8);
+        subText.setAttribute('class', 'node-subtitle');
+        subText.textContent = node.desc;
+        g.appendChild(subText);
+
+        // Status node pill (glowing indicator)
+        const indicator = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        indicator.setAttribute('cx', node.x + 60);
+        indicator.setAttribute('cy', node.y - 18);
+        indicator.setAttribute('r', 4);
+        
+        let fileObj = findFileByPath(node.file);
+        const status = fileObj ? fileObj.status : 'implemented';
+        indicator.setAttribute('fill', status === 'implemented' ? 'var(--color-success)' : 'var(--color-db)');
+        g.appendChild(indicator);
+
+        // Interactivity
+        g.addEventListener('click', () => {
+          document.querySelectorAll('.node-group').forEach(el => el.classList.remove('active'));
+          g.classList.add('active');
+
+          if (fileObj) {
+            displayDetails(fileObj);
+            // Highlight file tree node
+            highlightTreeNode(fileObj.path);
+          } else {
+            // Static directory details
+            displayDetails({
+              name: node.label,
+              path: node.file,
+              layer: node.type,
+              status: status,
+              desc: node.desc + '. Direktori atau sekumpulan modul.',
+              code: '// Folder/wildcard mapping'
+            });
+          }
+        });
+
+        nodesGroup.appendChild(g);
+      });
+    }
+
+    // Lookup helper
+    function findFileByPath(path) {
+      if (!path) return null;
+      const parts = path.split('/');
+      let current = codebaseData;
+      
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        if (current[part]) {
+          if (i === parts.length - 1) {
+            return current[part];
+          }
+          current = current[part].children || {};
+        } else {
+          return null;
+        }
+      }
+      return null;
+    }
+
+    function highlightNodeInGraph(filePath) {
+      document.querySelectorAll('.node-group').forEach(el => el.classList.remove('active'));
+      const matchingNode = nodes.find(n => n.file === filePath) || dataflowNodes.find(n => n.file === filePath);
+      if (matchingNode) {
+        const nodeEl = document.getElementById(`node-${matchingNode.id}`);
+        if (nodeEl) {
+          nodeEl.classList.add('active');
+        }
+      }
+    }
+
+    function highlightTreeNode(filePath) {
+      document.querySelectorAll('.tree-label').forEach(el => el.classList.remove('active'));
+      // Find all labels, filter by path name or custom check
+      const labels = document.querySelectorAll('.tree-label');
+      for (let label of labels) {
+        // Expand parents
+        let text = label.querySelector('.tree-text').innerText;
+        if (filePath.endsWith(text)) {
+          label.classList.add('active');
+          // Expand parent folders up the DOM chain
+          let parent = label.parentElement;
+          while (parent && !parent.classList.contains('file-tree')) {
+            if (parent.classList.contains('tree-children')) {
+              parent.classList.add('open');
+              // Rotate arrow icon
+              const prevSib = parent.previousElementSibling;
+              if (prevSib && prevSib.querySelector('.tree-icon')) {
+                prevSib.querySelector('.tree-icon').classList.add('expanded');
+              }
+            }
+            parent = parent.parentElement;
+          }
+          label.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          break;
+        }
+      }
+    }
+
+    // 6. View tabs switching
+    function switchView(viewName) {
+      activeView = viewName;
+      document.querySelectorAll('.graph-tab').forEach(el => el.classList.remove('active'));
+      event.target.classList.add('active');
+      renderGraph();
+    }
+
+    // 7. Search Bar implementation
+    document.getElementById('searchBar').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      if (!q) {
+        document.querySelectorAll('.tree-label').forEach(el => el.style.opacity = '1');
+        document.querySelectorAll('.node-group').forEach(el => el.style.opacity = '1');
+        return;
+      }
+
+      // Filter Tree
+      document.querySelectorAll('.tree-label').forEach(label => {
+        const text = label.querySelector('.tree-text').innerText.toLowerCase();
+        if (text.includes(q)) {
+          label.style.opacity = '1';
+          // Open parent directory
+          let parent = label.parentElement;
+          while (parent && !parent.classList.contains('file-tree')) {
+            if (parent.classList.contains('tree-children')) {
+              parent.classList.add('open');
+            }
+            parent = parent.parentElement;
+          }
+        } else {
+          label.style.opacity = '0.4';
+        }
+      });
+
+      // Filter Canvas nodes
+      const currentNodes = activeView === 'dependency' ? nodes : dataflowNodes;
+      currentNodes.forEach(node => {
+        const nodeEl = document.getElementById(`node-${node.id}`);
+        if (nodeEl) {
+          if (node.label.toLowerCase().includes(q) || node.desc.toLowerCase().includes(q)) {
+            nodeEl.style.opacity = '1';
+          } else {
+            nodeEl.style.opacity = '0.25';
+          }
+        }
+      });
+    });
+
+    // Initialize Tree on Page Load
+    window.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('fileTreeContainer');
+      buildFileTreeHtml(codebaseData, container);
+      renderGraph();
+    });
+  </script>
+</body>
+</html>
