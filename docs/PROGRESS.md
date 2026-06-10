@@ -1,6 +1,6 @@
 # Progress Pengerjaan — Sistem Registrasi Keanggotaan ASPERDA
 
-**Terakhir diperbarui:** 2026-06-02 (Tahap 1 selesai)
+**Terakhir diperbarui:** 2026-06-03 (Tahap 2 selesai)
 
 ---
 
@@ -19,36 +19,35 @@
 
 **Status Tahap:** ✅ Selesai
 
-| # | Task | Status | Catatan |
-|---|------|--------|---------|
-| 1.1 | Setup project Laravel 11 | ✅ | Sudah ada + semua package terinstall |
-| 1.2 | Setup project Vue 3 + Vite | ✅ | `frontend/` dengan PWA plugin |
-| 1.3 | Install & konfigurasi `didiwijaya/wilindo` v2.0.0 | ✅ | Migrations wilindo sudah berjalan |
-| 1.4 | Buat semua migration (11 tabel ASPERDA + app_settings) | ✅ | 12 migration, sudah dijalankan; `app_settings` di-seed default |
-| 1.5 | Setup `app/Enums/` dan `src/constants/enums.js` | ✅ | 9 PHP enum + frontend enums.js |
-| 1.6 | Setup `BaseController` + response envelope | ✅ | + Exception handler di bootstrap/app.php |
-| 1.7 | Setup `useApi()` composable | ✅ | + usePagination.js + useWilayah.js |
-| 1.8 | Auth login / logout (Sanctum) | ✅ | AuthController: register, login, logout, me + WilayahController |
-| 1.9 | Email verification (signed URL, 24 jam, `SendEmailVerificationJob`) | ✅ | Job + Mailable + Blade template email |
-| 1.10 | Set password setelah verifikasi email | ✅ | setPassword endpoint + SetPasswordView.vue |
+| #    | Task                                                                | Status | Catatan                                                         |
+| ------| ---------------------------------------------------------------------| --------| -----------------------------------------------------------------|
+| 1.1  | Setup project Laravel 11                                            | ✅      | Sudah ada + semua package terinstall                            |
+| 1.2  | Setup project Vue 3 + Vite                                          | ✅      | `frontend/` dengan PWA plugin                                   |
+| 1.3  | Install & konfigurasi `didiwijaya/wilindo` v2.0.0                   | ✅      | Migrations wilindo sudah berjalan                               |
+| 1.4  | Buat semua migration (11 tabel ASPERDA + app_settings)              | ✅      | 12 migration, sudah dijalankan; `app_settings` di-seed default  |
+| 1.5  | Setup `app/Enums/` dan `src/constants/enums.js`                     | ✅      | 9 PHP enum + frontend enums.js                                  |
+| 1.6  | Setup `BaseController` + response envelope                          | ✅      | + Exception handler di bootstrap/app.php                        |
+| 1.7  | Setup `useApi()` composable                                         | ✅      | + usePagination.js + useWilayah.js                              |
+| 1.8  | Auth login / logout (Sanctum)                                       | ✅      | AuthController: register, login, logout, me + WilayahController |
+| 1.9  | Email verification (signed URL, 24 jam, `SendEmailVerificationJob`) | ✅      | Job + Mailable + Blade template email                           |
+| 1.10 | Set password setelah verifikasi email                               | ✅      | setPassword endpoint + SetPasswordView.vue                      |
 
 ---
 
 ## Tahap 2 — Registrasi & Payment
 
-**Status Tahap:** ⏳ Belum dimulai  
-*Prasyarat: Tahap 1 selesai end-to-end*
+**Status Tahap:** ✅ Selesai
 
 | # | Task | Status | Catatan |
 |---|------|--------|---------|
-| 2.1 | Form registrasi data dasar + rekening bank | ⏳ | — |
-| 2.2 | Cascade wilayah: provinsi → kota → kecamatan (lazy-load via `useWilayah`) | ⏳ | — |
-| 2.3 | Form data keanggotaan + upload dokumen | ⏳ | — |
-| 2.4 | Halaman review sebelum bayar | ⏳ | — |
-| 2.5 | Integrasi Midtrans Snap — inisiasi pembayaran | ⏳ | — |
-| 2.6 | Midtrans webhook handler | ⏳ | — |
-| 2.7 | Update status member setelah payment valid | ⏳ | — |
-| 2.8 | `SendPaymentReminderJob` (scheduled tiap 08:00) | ⏳ | — |
+| 2.1 | Form registrasi data dasar + rekening bank | ✅ | `MemberRegisterForm.vue` sudah ada dari T1; `POST /auth/register` sudah aktif |
+| 2.2 | Cascade wilayah: provinsi → kota → kecamatan (lazy-load via `useWilayah`) | ✅ | `WilayahSelect.vue` dibuat; pakai `useWilayah.js` yang sudah ada |
+| 2.3 | Form data keanggotaan + upload dokumen | ✅ | `CompleteProfileView.vue` + `POST /member/complete-profile` + migration `document_path` |
+| 2.4 | Halaman review sebelum bayar | ✅ | `ReviewView.vue` — fetch GET /member, tampil semua data + nominal biaya |
+| 2.5 | Integrasi Midtrans Snap — inisiasi pembayaran | ✅ | `PaymentView.vue` + `POST /payment/create` → snap_token + Snap.js popup |
+| 2.6 | Midtrans webhook handler | ✅ | `POST /payment/webhook` (public) — signature verify + idempotency + DB transaction |
+| 2.7 | Update status member setelah payment valid | ✅ | `PaymentService::handlePaidPayment()` → status `waiting_survey` + log |
+| 2.8 | `SendPaymentReminderJob` (scheduled tiap 08:00) | ✅ | Job + `PaymentReminderMail` + blade template + schedule di `routes/console.php` |
 
 ---
 
@@ -112,11 +111,11 @@
 | Tahap | Total Task | Selesai | % |
 |-------|-----------|---------|---|
 | Tahap 1 — Fondasi | 10 | 10 | 100% |
-| Tahap 2 — Registrasi & Payment | 8 | 0 | 0% |
+| Tahap 2 — Registrasi & Payment | 8 | 8 | 100% |
 | Tahap 3 — Survey & Keluaran | 11 | 0 | 0% |
 | Tahap 4 — Distribusi & Admin | 7 | 0 | 0% |
 | Tahap 5 — Polish & Deploy | 7 | 0 | 0% |
-| **Total** | **43** | **10** | **23%** |
+| **Total** | **43** | **18** | **42%** |
 
 ---
 
@@ -124,6 +123,7 @@
 
 > Gunakan bagian ini untuk mencatat blockers, keputusan desain baru, atau perubahan scope yang muncul selama pengerjaan.
 
+- **2026-06-03 — Tahap 2 selesai.** Alur lengkap: complete-profile (branch + wilayah cascade + upload dok) → review → Midtrans Snap payment → webhook update status → `waiting_survey`. `SendPaymentReminderJob` dijadwal harian 08:00. Frontend: `CompleteProfileView`, `ReviewView`, `PaymentView`, `DashboardView` (status-aware). Backend: `MemberController`, `PaymentController`, `MemberService`, `PaymentService`, 14 file baru total.
 - **2026-06-02 — Tahap 1 selesai.** Semua 12 migration dijalankan ke DB. Auth flow: register → signed URL email → verify → set-password → login (Sanctum cookie-based). Password nullable saat pending email verification. Token set-password reuse tabel `password_reset_tokens` bawaan Laravel, berlaku 24 jam.
 - **ERD tidak berubah** — semua skema sesuai. Satu poin catatan: `password` di tabel `users` dibuat nullable via migration terpisah (bukan ubah migration awal) agar aman di shared hosting.
 - **Frontend auth views** ditambahkan: `LoginView.vue`, `VerifyEmailView.vue`, `SetPasswordView.vue`. Router diupdate dengan navigation guard berbasis role.

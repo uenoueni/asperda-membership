@@ -32,6 +32,24 @@ const routes = [
     component: () => import('@/views/member/DashboardView.vue'),
     meta: { requiresAuth: true, roles: ['member'] },
   },
+  {
+    path: '/lengkapi-profil',
+    name: 'complete-profile',
+    component: () => import('@/views/member/CompleteProfileView.vue'),
+    meta: { requiresAuth: true, roles: ['member'] },
+  },
+  {
+    path: '/review',
+    name: 'review',
+    component: () => import('@/views/member/ReviewView.vue'),
+    meta: { requiresAuth: true, roles: ['member'] },
+  },
+  {
+    path: '/bayar',
+    name: 'payment',
+    component: () => import('@/views/member/PaymentView.vue'),
+    meta: { requiresAuth: true, roles: ['member'] },
+  },
 
   // ─── Petugas ──────────────────────────────────────────────────────────────
   {

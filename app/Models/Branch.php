@@ -16,6 +16,7 @@ class Branch extends Model
         'address',
         'unit_count',
         'is_primary',
+        'document_path',
     ];
 
     protected $casts = [

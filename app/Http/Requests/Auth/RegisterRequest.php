@@ -18,9 +18,6 @@ class RegisterRequest extends FormRequest
             'rental_name'       => ['required', 'string', 'max:255'],
             'email'             => ['required', 'email', 'max:255', 'unique:users,email'],
             'phone'             => ['required', 'string', 'max:20'],
-            'bank_name'         => ['required', 'string', 'max:100'],
-            'bank_account_no'   => ['required', 'string', 'max:50'],
-            'bank_account_name' => ['required', 'string', 'max:255'],
         ];
     }
 
@@ -33,9 +30,6 @@ class RegisterRequest extends FormRequest
             'email.email'                => 'Format email tidak valid.',
             'email.unique'               => 'Email sudah terdaftar.',
             'phone.required'             => 'Nomor telepon wajib diisi.',
-            'bank_name.required'         => 'Nama bank wajib diisi.',
-            'bank_account_no.required'   => 'Nomor rekening wajib diisi.',
-            'bank_account_name.required' => 'Nama pemilik rekening wajib diisi.',
         ];
     }
 }

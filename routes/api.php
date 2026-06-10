@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\MemberController;
+use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\WilayahController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +40,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/kecamatan/{cityCode}', [WilayahController::class, 'kecamatan']);
     });
 
+    // ─── Public: Payment Webhook (Midtrans) ────────────────────────────────────
+    Route::post('/payment/webhook', [PaymentController::class, 'webhook']);
+
     // ─── Authenticated routes ──────────────────────────────────────────────────
     Route::middleware(['auth:sanctum'])->group(function () {
 
@@ -46,7 +51,25 @@ Route::prefix('v1')->group(function () {
             Route::get('/me', [AuthController::class, 'me']);
         });
 
-        // Modul berikutnya ditambahkan di sini saat dikerjakan:
-        // Member, Payment, Survey, Certificate, Refund, Starterkit, Admin
+        // ─── Member ───────────────────────────────────────────────────────────
+        Route::prefix('member')->group(function () {
+            Route::get('/', [MemberController::class, 'show']);
+            Route::put('/', [MemberController::class, 'update']);
+            Route::post('/complete-profile', [MemberController::class, 'completeProfile']);
+        });
+
+        // ─── Payment ──────────────────────────────────────────────────────────
+        Route::prefix('payment')->group(function () {
+            Route::post('/create', [PaymentController::class, 'create']);
+            Route::get('/{payment}/status', [PaymentController::class, 'status'])
+                ->name('payment.status');
+        });
+
+        // ─── Certificate download (stub — implementasi penuh Tahap 3) ────────
+        Route::get('/certificate/{certificate}/download', function ($certificate) {
+            return response()->json(['success' => false, 'message' => 'Belum tersedia.'], 501);
+        })->name('certificate.download');
+
+        // Modul berikutnya: Survey, Certificate, Refund, Starterkit, Admin
     });
 });

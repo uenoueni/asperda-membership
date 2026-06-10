@@ -1,50 +1,143 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Inter:wght@300;400;500;600&display=swap');
 
+/* ────────────────────────────────────────────────────────────────
+   Design Tokens — ASPERDA (from docs/foormdesign/DESIGN.md)
+   ──────────────────────────────────────────────────────────────── */
 :root {
-  --primary: #1d2d44;
-  --primary-dark: #111c2c;
-  --primary-mid: #2e4060;
-  --accent: #c03a2b;
-  --accent-hover: #d05048;
-  --ink: #1d2d44;
-  --muted: #68748a;
-  --line: #e4e7ef;
-  --bg: #ffffff;
-  --bg-soft: #f4f6fb;
-  --danger: #c03a2b;
-  --ok: #1f8a52;
-  --radius: 10px;
-  --radius-sm: 6px;
-  --shadow-sm: 0 2px 8px -2px rgba(29, 45, 68, 0.08);
-  --shadow: 0 6px 24px -6px rgba(29, 45, 68, 0.16);
-  --shadow-lg: 0 20px 60px -20px rgba(29, 45, 68, 0.28);
-  --max: 1120px;
+  /* Surface */
+  --color-surface:                   #f9f9ff;
+  --color-surface-dim:               #d3daea;
+  --color-surface-bright:            #f9f9ff;
+  --color-surface-container-lowest:  #ffffff;
+  --color-surface-container-low:     #f0f3ff;
+  --color-surface-container:         #e7eefe;
+  --color-surface-container-high:    #e2e8f8;
+  --color-surface-container-highest: #dce2f3;
+  --color-surface-variant:           #dce2f3;
+  --color-surface-tint:              #455f87;
+
+  /* On-surface */
+  --color-on-surface:         #151c27;
+  --color-on-surface-variant: #43474e;
+  --color-inverse-surface:    #2a313d;
+  --color-inverse-on-surface: #ebf1ff;
+
+  /* Outline */
+  --color-outline:         #74777f;
+  --color-outline-variant: #c4c6cf;
+
+  /* Primary */
+  --color-primary:              #022448;
+  --color-on-primary:           #ffffff;
+  --color-primary-container:    #1e3a5f;
+  --color-on-primary-container: #8aa4cf;
+  --color-inverse-primary:      #adc8f5;
+  --color-primary-fixed:        #d5e3ff;
+  --color-primary-fixed-dim:    #adc8f5;
+  --color-on-primary-fixed:     #001c3b;
+  --color-on-primary-fixed-variant: #2d486d;
+
+  /* Secondary */
+  --color-secondary:              #0060ac;
+  --color-on-secondary:           #ffffff;
+  --color-secondary-container:    #68abff;
+  --color-on-secondary-container: #003e73;
+  --color-secondary-fixed:        #d4e3ff;
+  --color-secondary-fixed-dim:    #a4c9ff;
+  --color-on-secondary-fixed:     #001c39;
+  --color-on-secondary-fixed-variant: #004883;
+
+  /* Tertiary */
+  --color-tertiary:              #202427;
+  --color-on-tertiary:           #ffffff;
+  --color-tertiary-container:    #363a3c;
+  --color-on-tertiary-container: #a0a4a6;
+  --color-tertiary-fixed:        #e0e3e6;
+  --color-tertiary-fixed-dim:    #c3c7ca;
+  --color-on-tertiary-fixed:     #181c1e;
+  --color-on-tertiary-fixed-variant: #43474a;
+
+  /* Error */
+  --color-error:              #ba1a1a;
+  --color-on-error:           #ffffff;
+  --color-error-container:    #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Background */
+  --color-background:    #f9f9ff;
+  --color-on-background: #151c27;
+
+  /* ── Radius (from DESIGN.md) ── */
+  --radius-sm:   0.25rem;   /* 4px  */
+  --radius:      0.5rem;    /* 8px  */
+  --radius-md:   0.75rem;   /* 12px */
+  --radius-lg:   1rem;      /* 16px */
+  --radius-xl:   1.5rem;    /* 24px */
+  --radius-full: 9999px;
+
+  /* ── Spacing ── */
+  --spacing-container-max: 800px;
+  --spacing-section-gap:   2.5rem;
+  --spacing-stack-gap:     1.25rem;
+  --spacing-inline-gap:    1rem;
+  --spacing-form-padding:  2rem;
+
+  /* ── Elevation shadows ── */
+  --shadow-sm: 0 2px 8px -2px rgba(2, 36, 72, 0.06);
+  --shadow:    0 4px 6px rgba(2, 36, 72, 0.04), 0 20px 40px rgba(2, 36, 72, 0.10);
+  --shadow-lg: 0 8px 60px -10px rgba(2, 36, 72, 0.22);
+
+  /* ── Transition ── */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --dur: 200ms;
+  --dur:  200ms;
+
+  /* ── Legacy aliases (keep existing components working) ── */
+  --primary:      var(--color-primary-container);
+  --primary-dark: var(--color-primary);
+  --primary-mid:  var(--color-primary-container);
+  --accent:       var(--color-secondary);
+  --accent-hover: var(--color-secondary-container);
+  --ink:          var(--color-on-surface);
+  --muted:        var(--color-on-surface-variant);
+  --line:         var(--color-outline-variant);
+  --bg:           var(--color-surface-container-lowest);
+  --bg-soft:      var(--color-surface-container-low);
+  --danger:       var(--color-error);
+  --ok:           #1f8a52;
+  --max:          var(--spacing-container-max);
 }
 
-* { box-sizing: border-box; }
+/* ────────────────────────────────────────────────────────────────
+   Base Reset & Global Styles
+   ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
 html { scroll-behavior: smooth; }
+
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color: var(--ink);
-  background: var(--bg);
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
+  font-size: 1rem;
   font-weight: 400;
+  line-height: 1.65;
+  color: var(--color-on-surface);
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-h1, h2, h3 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Manrope', system-ui, sans-serif;
   line-height: 1.2;
-  color: var(--primary);
+  color: var(--color-primary);
   margin: 0 0 0.5em;
-  font-weight: 600;
+  font-weight: 700;
 }
-p { margin: 0 0 1em; }
-a { color: inherit; text-decoration: none; }
+
+p  { margin: 0 0 1em; }
+a  { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
-ul { margin: 0; padding: 0; list-style: none; }
+ul  { margin: 0; padding: 0; list-style: none; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

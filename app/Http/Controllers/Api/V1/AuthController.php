@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
 class AuthController extends BaseController
@@ -30,9 +30,6 @@ class AuthController extends BaseController
                 'name'              => $request->name,
                 'email'             => $request->email,
                 'phone'             => $request->phone,
-                'bank_name'         => $request->bank_name,
-                'bank_account_no'   => $request->bank_account_no,
-                'bank_account_name' => $request->bank_account_name,
                 'role'              => 'member',
                 // password null sampai email diverifikasi
             ]);
@@ -63,14 +60,19 @@ class AuthController extends BaseController
      */
     public function verifyEmail(Request $request, User $user): RedirectResponse
     {
+        $frontendUrl = rtrim(config('app.frontend_url'), '/');
+
         if (! $request->hasValidSignature()) {
-            $frontendUrl = rtrim(config('app.frontend_url'), '/');
             return redirect("{$frontendUrl}/verifikasi?status=invalid");
         }
 
-        if (! $user->email_verified_at) {
-            $user->update(['email_verified_at' => now()]);
+        // Link sudah pernah dipakai — tolak agar tidak bisa digunakan ulang
+        if ($user->email_verified_at) {
+            return redirect("{$frontendUrl}/verifikasi?status=invalid");
         }
+
+        $user->email_verified_at = now();
+        $user->save();
 
         // Buat token set-password via password_reset_tokens (reuse tabel bawaan Laravel)
         $token = Str::random(64);
@@ -124,11 +126,24 @@ class AuthController extends BaseController
     {
         $request->validate(['email' => ['required', 'email', 'exists:users,email']]);
 
+        $key = 'resend-verification:' . strtolower($request->email);
+
+        if (RateLimiter::tooManyAttempts($key, 2)) {
+            $seconds = RateLimiter::availableIn($key);
+            return response()->json([
+                'success'     => false,
+                'message'     => "Terlalu banyak percobaan. Coba lagi dalam {$seconds} detik.",
+                'retry_after' => $seconds,
+            ], 429);
+        }
+
         $user = User::where('email', $request->email)->firstOrFail();
 
         if ($user->email_verified_at) {
             return $this->error('Email sudah terverifikasi. Silakan login.', 422);
         }
+
+        RateLimiter::hit($key, 600); // decay 10 menit
 
         SendEmailVerificationJob::dispatch($user);
 

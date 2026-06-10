@@ -96,7 +96,9 @@ onMounted(async () => {
     <!-- Nav -->
     <header class="nav">
       <div class="wrap nav-inner">
-        <a href="#top" class="brand">ASPERDA</a>
+        <a href="#top" class="brand">
+          ASPERDA<span class="brand-dot">.</span>
+        </a>
         <nav class="links" aria-label="Navigasi utama">
           <a href="#keanggotaan">Keanggotaan</a>
           <a href="#manfaat">Manfaat</a>
@@ -124,26 +126,32 @@ onMounted(async () => {
 
     <!-- Hero -->
     <section id="top" class="hero">
-      <div class="hero-bg-pattern" aria-hidden="true"></div>
-      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-bg-shapes" aria-hidden="true">
+        <div class="glow-orb red-glow"></div>
+        <div class="glow-orb navy-glow"></div>
+      </div>
       <div class="wrap hero-inner">
-        <span class="eyebrow">
-          <span class="eyebrow-rule" aria-hidden="true"></span>
+        <span class="eyebrow" data-reveal>
+          <span class="eyebrow-line"></span>
           Asosiasi Pengusaha Rental Kendaraan Indonesia
-          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-line"></span>
         </span>
-        <h1>Bergabung dengan ASPERDA</h1>
-        <p class="lead">
+        <h1 data-reveal style="--delay: 100ms">
+          Bergabung dengan <span class="highlight-navy">ASPERDA</span>
+        </h1>
+        <p class="lead" data-reveal style="--delay: 200ms">
           Rumah besar bagi pengusaha rental mobil daerah untuk berkembang, berkolaborasi,
           serta memperoleh perlindungan dan pembinaan usaha yang profesional dan berdaya saing.
         </p>
-        <div class="cta">
+        <div class="cta" data-reveal style="--delay: 300ms">
           <a href="#daftar" class="btn-primary">Daftar Anggota</a>
           <a href="#keanggotaan" class="btn-line">Pelajari Keanggotaan</a>
         </div>
       </div>
-      <div class="hero-stats-bar">
-        <div class="wrap hero-stats-inner">
+
+      <!-- Overlapping Stats Bar -->
+      <div class="hero-stats-bar" data-reveal style="--delay: 450ms">
+        <div class="hero-stats-inner">
           <div v-for="s in stats" :key="s.label" class="hero-stat">
             <strong>{{ s.value }}</strong>
             <span>{{ s.label }}</span>
@@ -152,29 +160,49 @@ onMounted(async () => {
       </div>
     </section>
 
-    <!-- Tujuan -->
-    <section id="keanggotaan" class="wrap section">
-      <h2 class="section-title" data-reveal>Tujuan Keanggotaan</h2>
-      <p class="sub" data-reveal style="--delay:80ms">
-        Keanggotaan ASPERDA dibangun untuk memajukan ekosistem usaha rental yang tertib dan profesional.
-      </p>
-      <ul class="checklist" data-reveal style="--delay:160ms">
-        <li v-for="(t, i) in tujuan" :key="i">{{ t }}</li>
-      </ul>
+    <!-- Tujuan Section (Two Column) -->
+    <section id="keanggotaan" class="wrap section tujuan-section">
+      <div class="tujuan-intro" data-reveal>
+        <span class="section-tag">Tujuan Utama</span>
+        <h2 class="section-title">Membangun Ekosistem Rental yang Solid &amp; Terpercaya</h2>
+        <p class="sub text-large">
+          Keanggotaan ASPERDA dirancang untuk memfasilitasi pertumbuhan bisnis yang sehat, aman, dan berstandar nasional bagi seluruh pengusaha rental mobil di Indonesia.
+        </p>
+      </div>
+      <div class="tujuan-content" data-reveal style="--delay: 150ms">
+        <div class="purpose-list">
+          <div v-for="(t, i) in tujuan" :key="i" class="purpose-item">
+            <div class="purpose-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <p class="purpose-text">{{ t }}</p>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- Jenis -->
-    <section class="band">
+    <!-- Jenis Keanggotaan -->
+    <section class="band bg-soft-navy">
       <div class="wrap section">
-        <h2 class="section-title centered" data-reveal>Jenis Keanggotaan</h2>
+        <div class="section-header centered" data-reveal>
+          <span class="section-tag text-red">Kategori Anggota</span>
+          <h2 class="section-title centered">Pilihan Jenis Keanggotaan</h2>
+          <p class="sub centered">
+            Kami merangkul berbagai pelaku ekosistem industri transportasi dan rental untuk berkolaborasi secara sinergis.
+          </p>
+        </div>
         <div class="cards">
           <article
             v-for="(j, i) in jenis"
             :key="i"
             class="card"
+            :class="{ 'card-featured': j.title === 'Anggota Kehormatan' }"
             data-reveal
-            :style="`--delay: ${(i + 1) * 90}ms`"
+            :style="`--delay: ${(i + 1) * 100}ms`"
           >
+            <div class="card-accent-bar"></div>
             <div class="card-icon" v-html="iconSvg(j.icon)"></div>
             <h3>{{ j.title }}</h3>
             <p>{{ j.desc }}</p>
@@ -183,72 +211,118 @@ onMounted(async () => {
       </div>
     </section>
 
-    <!-- Manfaat -->
-    <section id="manfaat" class="wrap section">
-      <h2 class="section-title" data-reveal>Manfaat Keanggotaan</h2>
+    <!-- Manfaat Keanggotaan -->
+    <section id="manfaat" class="wrap section manfaat-section">
+      <div class="section-header" data-reveal>
+        <span class="section-tag">Benefit Eksklusif</span>
+        <h2 class="section-title">Manfaat Menjadi Anggota</h2>
+        <p class="sub">
+          Dapatkan berbagai kemudahan dan nilai tambah yang menunjang kredibilitas serta keberlanjutan bisnis rental Anda.
+        </p>
+      </div>
       <div class="benefits">
         <div
           v-for="(m, i) in manfaat"
           :key="i"
-          class="benefit"
+          class="benefit-card"
           data-reveal
-          :style="`--delay: ${i * 55}ms`"
+          :style="`--delay: ${i * 60}ms`"
         >
-          <div class="benefit-icon" v-html="iconSvg(m.icon, 18)"></div>
-          <span>{{ m.text }}</span>
+          <div class="benefit-icon-wrapper" v-html="iconSvg(m.icon, 20)"></div>
+          <span class="benefit-text">{{ m.text }}</span>
         </div>
       </div>
     </section>
 
-    <!-- Hak & Kewajiban -->
-    <section class="band">
+    <!-- Hak & Kewajiban (Side by Side Cards) -->
+    <section class="band bg-gradient-light">
       <div class="wrap section two-col">
-        <div data-reveal>
-          <h2 class="section-title">Hak Anggota</h2>
-          <ul class="checklist">
-            <li v-for="(h, i) in hak" :key="i">{{ h }}</li>
-          </ul>
+        <!-- Hak Card -->
+        <div class="hak-kewajiban-card card-navy" data-reveal>
+          <div class="hk-header">
+            <div class="hk-badge">Hak Anggota</div>
+            <h3>Perlindungan &amp; Dukungan Penuh</h3>
+          </div>
+          <div class="hk-body">
+            <ul class="hk-list">
+              <li v-for="(h, i) in hak" :key="i">
+                <span class="hk-bullet-navy"></span>
+                <span>{{ h }}</span>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div data-reveal style="--delay:110ms">
-          <h2 class="section-title">Kewajiban Anggota</h2>
-          <ul class="checklist">
-            <li v-for="(k, i) in kewajiban" :key="i">{{ k }}</li>
-          </ul>
+
+        <!-- Kewajiban Card -->
+        <div class="hak-kewajiban-card card-red" data-reveal style="--delay: 150ms">
+          <div class="hk-header">
+            <div class="hk-badge">Kewajiban Anggota</div>
+            <h3>Integritas &amp; Standar Profesional</h3>
+          </div>
+          <div class="hk-body">
+            <ul class="hk-list">
+              <li v-for="(k, i) in kewajiban" :key="i">
+                <span class="hk-bullet-red"></span>
+                <span>{{ k }}</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Proses -->
-    <section id="proses" class="wrap section">
-      <h2 class="section-title centered" data-reveal>Proses Pendaftaran</h2>
-      <div class="timeline-wrap" data-reveal style="--delay:100ms">
+    <!-- Proses Pendaftaran (Timeline) -->
+    <section id="proses" class="wrap section proses-section">
+      <div class="section-header centered" data-reveal>
+        <span class="section-tag">Alur Gabung</span>
+        <h2 class="section-title centered">Tahapan Proses Pendaftaran</h2>
+        <p class="sub centered">
+          Langkah mudah untuk menjadi anggota resmi ASPERDA dan terverifikasi secara nasional.
+        </p>
+      </div>
+      <div class="timeline-wrap" data-reveal style="--delay: 100ms">
         <ol class="timeline">
           <li v-for="(p, i) in proses" :key="i" class="tl-item">
-            <div class="tl-num">{{ i + 1 }}</div>
-            <p class="tl-text">{{ p }}</p>
+            <div class="tl-num-wrap">
+              <div class="tl-num">{{ i + 1 }}</div>
+              <div class="tl-dot"></div>
+            </div>
+            <div class="tl-content">
+              <p class="tl-text">{{ p }}</p>
+            </div>
           </li>
         </ol>
       </div>
     </section>
 
-    <!-- Daftar -->
-    <section id="daftar" class="band">
-      <div class="wrap section register">
+    <!-- Daftar (Registration Portal) -->
+    <section id="daftar" class="band bg-soft-navy border-top-red">
+      <div class="wrap section register-container">
         <div class="register-intro" data-reveal>
-          <h2 class="section-title">Formulir Pendaftaran Anggota</h2>
+          <span class="section-tag">Formulir Digital</span>
+          <h2 class="section-title">Pendaftaran Mandiri Anggota Baru</h2>
           <p class="sub">
-            Lengkapi data dasar berikut untuk memulai. Setelah pendaftaran, Anda akan menerima
-            email verifikasi untuk melanjutkan ke kelengkapan data dan pembayaran.
+            Mulai langkah sukses Anda hari ini. Isi informasi dasar usaha Anda secara lengkap dan benar. Setelah mengirimkan formulir, silakan periksa email Anda untuk panduan verifikasi dokumen operasional.
           </p>
-          <div class="trust-strip">
-            <div v-for="s in stats" :key="s.label" class="trust-item">
-              <strong>{{ s.value }}</strong>
-              <span>{{ s.label }}</span>
+          <div class="trust-banner">
+            <div class="trust-banner-title">Bergabung Bersama Kami:</div>
+            <div class="trust-strip">
+              <div v-for="s in stats" :key="s.label" class="trust-item">
+                <strong>{{ s.value }}</strong>
+                <span>{{ s.label }}</span>
+              </div>
             </div>
           </div>
         </div>
-        <div class="register-card" data-reveal style="--delay:130ms">
-          <MemberRegisterForm />
+        <div class="register-card-wrapper" data-reveal style="--delay: 150ms">
+          <div class="register-card-header">
+            <div class="card-accent-stripe"></div>
+            <h3>Formulir Anggota ASPERDA</h3>
+            <p>Silakan lengkapi kolom pendaftaran di bawah ini.</p>
+          </div>
+          <div class="register-card-body">
+            <MemberRegisterForm />
+          </div>
         </div>
       </div>
     </section>
@@ -256,17 +330,37 @@ onMounted(async () => {
     <!-- Footer -->
     <footer class="footer">
       <div class="wrap foot-inner">
-        <div>
-          <strong class="brand">ASPERDA</strong>
-          <p>Asosiasi Pengusaha Rental Kendaraan Indonesia</p>
+        <div class="foot-brand-section">
+          <strong class="footer-brand">ASPERDA<span class="brand-dot">.</span></strong>
+          <p class="footer-desc">Asosiasi Pengusaha Rental Kendaraan Indonesia</p>
+          <p class="footer-tagline">Mewadahi, membina, dan memajukan rental kendaraan daerah untuk Indonesia yang lebih terhubung.</p>
         </div>
         <div class="foot-contact">
-          <p>Graha Mampang Lt. 1, Jakarta Selatan, 12790</p>
-          <p>Hotline (WhatsApp): 0859-2373-1419</p>
-          <p>info@asperdaindonesia.com</p>
+          <h4>Hubungi Kami</h4>
+          <p class="contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="contact-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Graha Mampang Lt. 1, Jakarta Selatan, 12790
+          </p>
+          <p class="contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="contact-icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Hotline (WA): 0859-2373-1419
+          </p>
+          <p class="contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="contact-icon"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            info@asperdaindonesia.com
+          </p>
         </div>
       </div>
-      <div class="copy">© 2025 Asperda Indonesia. All rights reserved.</div>
+      <div class="copy">
+        <div class="wrap copy-inner">
+          <span>© 2026 Asperda Indonesia. Seluruh hak cipta dilindungi undang-undang.</span>
+          <div class="copy-links">
+            <a href="#">Kebijakan Privasi</a>
+            <span class="separator">|</span>
+            <a href="#">Syarat &amp; Ketentuan</a>
+          </div>
+        </div>
+      </div>
     </footer>
 
   </div>
@@ -274,87 +368,899 @@ onMounted(async () => {
 
 <style scoped>
 /* ─── Layout helpers ─── */
-.wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 1.25rem; }
-.section { padding: 4.5rem 1.25rem; }
-.band { background: var(--bg-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.sub { color: var(--muted); max-width: 60ch; }
-
-/* ─── Section titles ─── */
-.section-title {
-  position: relative;
-  padding-bottom: 0.875rem;
-  margin-bottom: 1.25rem;
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0;
-  width: 40px; height: 3px;
-  border-radius: 2px;
-  background: var(--accent);
+.section {
+  padding: 6.5rem 1.5rem;
 }
-.section-title.centered { text-align: center; }
-.section-title.centered::after { left: 50%; transform: translateX(-50%); }
-
-/* ─── Scroll reveal ─── */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
-  transition-delay: var(--delay, 0ms);
-}
-[data-reveal].revealed { opacity: 1; transform: none; }
-
-/* ─── Nav ─── */
-.nav {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+.band {
+  background: #ffffff;
+  border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
-.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-.brand {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--primary);
-  font-size: 1.35rem;
+.bg-soft-navy {
+  background: #f8fafc; /* very clean white-grey with a hint of slate */
 }
-.links { display: flex; align-items: center; gap: 1.5rem; }
-.links a {
-  font-weight: 600;
-  color: var(--ink);
-  font-size: 0.95rem;
-  padding: 0.25rem 0;
+.bg-gradient-light {
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+}
+.border-top-red {
+  border-top: 4px solid var(--accent);
+}
+.sub {
+  color: var(--muted);
+  max-width: 60ch;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+.sub.centered {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+.sub.text-large {
+  font-size: 1.15rem;
+  line-height: 1.65;
+}
+
+/* ─── Section Headings / tags ─── */
+.section-header {
+  margin-bottom: 3.5rem;
+}
+.section-header.centered {
+  text-align: center;
+}
+.section-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--primary); /* Navy tag */
+  margin-bottom: 0.75rem;
   position: relative;
-  transition: color var(--dur) var(--ease);
+  padding-left: 1rem;
+}
+.section-tag::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  background: var(--accent); /* Red dot */
+  border-radius: 50%;
+}
+.section-tag.text-red {
+  color: var(--accent);
+}
+.section-tag.text-red::before {
+  background: var(--primary);
+}
+
+.section-title {
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  color: var(--primary); /* Navy */
+  line-height: 1.2;
+  margin-top: 0.25rem;
+  margin-bottom: 1.25rem;
+}
+.section-title.centered {
+  text-align: center;
+}
+
+/* ─── Scroll Reveal Animations ─── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+  transition-delay: var(--delay, 0ms);
+}
+[data-reveal].revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* ─── Navigation Header ─── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(29, 45, 68, 0.08);
+  transition: background 0.3s;
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+.brand {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+.brand-dot {
+  color: var(--accent); /* Red dot at the end */
+  font-weight: 900;
+}
+.links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+.links a {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: var(--primary);
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s var(--ease);
   cursor: pointer;
 }
 .links a::after {
   content: '';
   position: absolute;
-  bottom: -2px; left: 0; right: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 2px;
-  background: var(--accent);
+  background: var(--accent); /* Red indicator */
   transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s var(--ease);
+}
+.links a:hover {
+  color: var(--accent);
+}
+.links a:hover::after {
+  transform: scaleX(1);
   transform-origin: left;
-  transition: transform var(--dur) var(--ease);
 }
-.links a:hover { color: var(--primary); }
-.links a:hover::after { transform: scaleX(1); }
 .btn-ghost {
-  padding: 0.45rem 1.1rem;
+  padding: 0.5rem 1.35rem !important;
   border: 1.5px solid var(--accent);
-  border-radius: 999px;
+  border-radius: 6px;
   color: var(--accent) !important;
-  font-weight: 600;
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+  font-weight: 600 !important;
+  background: transparent;
+  transition: all 0.3s var(--ease) !important;
 }
-.btn-ghost:hover { background: var(--accent); color: #fff !important; }
-.btn-ghost::after { display: none !important; }
+.btn-ghost:hover {
+  background: var(--accent) !important;
+  color: #fff !important;
+}
+.btn-ghost::after {
+  display: none !important;
+}
 
-/* ─── Hamburger ─── */
+/* ─── Hero Section (Modern Light Theme) ─── */
+.hero {
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+  padding: 6.5rem 1.5rem 8.5rem;
+}
+.hero-bg-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+/* Beautiful modern tech lines and glowing orbs */
+.hero-bg-shapes::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(29, 45, 68, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 45, 68, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: center top;
+}
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.08;
+}
+.red-glow {
+  top: -10%;
+  right: 15%;
+  width: 400px;
+  height: 400px;
+  background: var(--accent);
+}
+.navy-glow {
+  bottom: -20%;
+  left: 10%;
+  width: 500px;
+  height: 500px;
+  background: var(--primary);
+}
+
+.hero-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 1.75rem;
+}
+.eyebrow-line {
+  display: block;
+  width: 32px;
+  height: 1.5px;
+  background: var(--accent);
+}
+.hero h1 {
+  color: var(--primary);
+  font-size: clamp(2.5rem, 5.5vw, 4.25rem);
+  margin-bottom: 1.25rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.highlight-navy {
+  color: var(--primary);
+  position: relative;
+}
+.highlight-navy::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(192, 58, 43, 0.15); /* Red marker line under ASPERDA */
+  z-index: -1;
+}
+.lead {
+  color: var(--muted);
+  max-width: 65ch;
+  margin: 0 auto 2.75rem;
+  font-size: 1.15rem;
+  line-height: 1.7;
+}
+.cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #ffffff;
+  padding: 1rem 2.25rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 16px rgba(192, 58, 43, 0.22);
+  transition: all 0.3s var(--ease);
+}
+.btn-primary:hover {
+  background: var(--primary-dark);
+  box-shadow: 0 8px 24px rgba(29, 45, 68, 0.25);
+  transform: translateY(-2px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+.btn-line {
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  padding: 1rem 2.25rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: transparent;
+  transition: all 0.3s var(--ease);
+}
+.btn-line:hover {
+  background: rgba(29, 45, 68, 0.05);
+  border-color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* ─── Hero Floating Stats Card ─── */
+.hero-stats-bar {
+  max-width: 900px;
+  width: calc(100% - 3rem);
+  background: #ffffff;
+  margin: 4.5rem auto 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(29, 45, 68, 0.08);
+  position: relative;
+  z-index: 10;
+}
+.hero-stats-inner {
+  display: flex;
+  justify-content: space-around;
+  padding: 1.75rem 2rem;
+  flex-wrap: wrap;
+}
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+  text-align: center;
+  min-width: 150px;
+  padding: 0.5rem;
+  position: relative;
+}
+.hero-stat:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: var(--line);
+}
+.hero-stat strong {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.1;
+}
+.hero-stat span {
+  font-size: 0.72rem;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* ─── Tujuan Section (Two Column, editorial layout) ─── */
+.tujuan-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4.5rem;
+  align-items: center;
+  border-top: 1px solid var(--line);
+}
+.tujuan-intro {
+  display: flex;
+  flex-direction: column;
+}
+.tujuan-content {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.tujuan-content::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: var(--primary); /* Left navy bar */
+}
+.purpose-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.purpose-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.purpose-icon {
+  color: var(--accent); /* Red check */
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+.purpose-text {
+  color: var(--ink);
+  font-size: 0.975rem;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ─── Jenis Keanggotaan Cards ─── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+  margin-top: 3.5rem;
+}
+.card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 2.5rem 2rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.4s var(--ease);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.card-accent-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--primary); /* Default Navy top bar */
+}
+.card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: rgba(29, 45, 68, 0.05); /* Navy tint */
+  display: grid;
+  place-items: center;
+  margin-bottom: 1.5rem;
+  color: var(--primary);
+  transition: all 0.3s var(--ease);
+}
+.card-icon :deep(svg) {
+  display: block;
+}
+.card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: var(--primary);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+.card p {
+  color: var(--muted);
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+/* Featured card (middle card - Keanggotaan Kehormatan) */
+.card-featured {
+  transform: scale(1.02);
+  border-color: rgba(192, 58, 43, 0.2);
+  box-shadow: 0 10px 30px rgba(192, 58, 43, 0.08);
+}
+.card-featured .card-accent-bar {
+  background: var(--accent); /* Red top bar for featured card */
+}
+.card-featured .card-icon {
+  background: rgba(192, 58, 43, 0.07); /* Red tint */
+  color: var(--accent);
+}
+
+/* Hover effects */
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(29, 45, 68, 0.12);
+  border-color: rgba(29, 45, 68, 0.15);
+}
+.card-featured:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 16px 36px rgba(192, 58, 43, 0.15);
+  border-color: rgba(192, 58, 43, 0.3);
+}
+.card:hover .card-icon {
+  transform: scale(1.1);
+  background: var(--primary);
+  color: #ffffff;
+}
+.card-featured:hover .card-icon {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+/* ─── Manfaat Keanggotaan ─── */
+.manfaat-section {
+  border-bottom: 1px solid var(--line);
+}
+.benefits {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3.5rem;
+}
+.benefit-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  transition: all 0.3s var(--ease);
+}
+.benefit-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 6px 18px rgba(192, 58, 43, 0.06);
+  transform: translateY(-2px);
+}
+.benefit-icon-wrapper {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: rgba(192, 58, 43, 0.06); /* Red tint */
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: var(--accent);
+  transition: all 0.3s;
+}
+.benefit-card:hover .benefit-icon-wrapper {
+  background: var(--accent);
+  color: #ffffff;
+}
+.benefit-icon-wrapper :deep(svg) {
+  display: block;
+}
+.benefit-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+/* ─── Hak & Kewajiban (Modern block styling) ─── */
+.hk-header {
+  padding: 2.25rem 2.25rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.hk-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+}
+.hak-kewajiban-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.hak-kewajiban-card h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 0;
+}
+.hk-body {
+  padding: 2.25rem;
+}
+.hk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.hk-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  font-size: 0.95rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+/* Card Navy Variant for Hak */
+.card-navy {
+  border-top: 4px solid var(--primary);
+}
+.card-navy .hk-badge {
+  background: rgba(29, 45, 68, 0.08);
+  color: var(--primary);
+}
+.hk-bullet-navy {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+
+/* Card Red Variant for Kewajiban */
+.card-red {
+  border-top: 4px solid var(--accent);
+}
+.card-red .hk-badge {
+  background: rgba(192, 58, 43, 0.08);
+  color: var(--accent);
+}
+.hk-bullet-red {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+
+/* ─── Proses Pendaftaran (Timeline) ─── */
+.proses-section {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.timeline-wrap {
+  margin-top: 4rem;
+}
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  list-style: none;
+  padding: 0; margin: 0;
+}
+.tl-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  padding: 0 1rem;
+}
+.tl-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--line);
+  z-index: 1;
+}
+.tl-num-wrap {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tl-num {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: grid;
+  place-items: center;
+  transition: all 0.3s;
+  box-shadow: 0 4px 10px rgba(29, 45, 68, 0.06);
+}
+.tl-item:hover .tl-num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+  transform: scale(1.1);
+  box-shadow: 0 6px 14px rgba(192, 58, 43, 0.25);
+}
+.tl-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ─── Register Section (Registration Portal) ─── */
+.register-container {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 5rem;
+  align-items: start;
+}
+.trust-banner {
+  margin-top: 3rem;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+.trust-banner-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.trust-strip {
+  display: flex;
+  overflow: hidden;
+}
+.trust-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+  gap: 0.15rem;
+  border-right: 1px solid var(--line);
+}
+.trust-item:last-child {
+  border-right: none;
+}
+.trust-item strong {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--accent); /* Red highlight */
+  line-height: 1;
+}
+.trust-item span {
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.register-card-wrapper {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  position: relative;
+}
+.card-accent-stripe {
+  height: 5px;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+}
+.register-card-header {
+  padding: 2.25rem 2.25rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.register-card-header h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 0.25rem;
+}
+.register-card-header p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0;
+}
+.register-card-body {
+  padding: 2.25rem;
+}
+
+/* ─── Footer ─── */
+.footer {
+  background: var(--primary-dark);
+  color: rgba(244, 246, 251, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.foot-inner {
+  display: flex;
+  justify-content: space-between;
+  gap: 4rem;
+  padding: 5rem 1.5rem 3.5rem;
+}
+.foot-brand-section {
+  max-width: 400px;
+}
+.footer-brand {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 1.75rem;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+.footer-desc {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 0.75rem;
+}
+.footer-tagline {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: rgba(244, 246, 251, 0.6);
+  margin: 0;
+}
+.foot-contact {
+  min-width: 280px;
+}
+.foot-contact h4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  color: #ffffff;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.875rem !important;
+  color: rgba(244, 246, 251, 0.85);
+}
+.contact-icon {
+  color: var(--accent); /* Red contact icons */
+  flex-shrink: 0;
+}
+.copy {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 1.5rem 1.5rem;
+  background: rgba(0, 0, 0, 0.15);
+}
+.copy-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: rgba(244, 246, 251, 0.45);
+}
+.copy-links {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+.copy-links a {
+  transition: color 0.3s;
+  color: rgba(244, 246, 251, 0.45);
+}
+.copy-links a:hover {
+  color: #ffffff;
+}
+.separator {
+  color: rgba(244, 246, 251, 0.2);
+}
+
+/* ─── Hamburger Mobile Menu & Media Queries ─── */
 .hamburger {
   display: none;
   background: none;
@@ -375,335 +1281,58 @@ onMounted(async () => {
 .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
 .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
 .mobile-menu {
   border-top: 1px solid var(--line);
-  background: #fff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(29, 45, 68, 0.08);
 }
 .mobile-menu a {
   display: block;
-  padding: 0.9rem 1.5rem;
+  padding: 1rem 1.5rem;
   font-weight: 600;
-  color: var(--ink);
+  color: var(--primary);
   border-bottom: 1px solid var(--line);
   transition: background var(--dur) var(--ease);
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 .mobile-menu a:last-child { border-bottom: none; }
 .mobile-menu a:hover { background: var(--bg-soft); }
 .mobile-menu .mobile-cta { color: var(--accent); background: rgba(192, 58, 43, 0.04); }
 
-/* ─── Hero ─── */
-.hero {
-  background: linear-gradient(155deg, var(--primary-mid) 0%, var(--primary) 50%, var(--primary-dark) 100%);
-  color: #fff;
-  position: relative;
-  overflow: hidden;
-}
-.hero-bg-pattern {
-  position: absolute; inset: 0;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
-  background-size: 30px 30px;
-  pointer-events: none;
-}
-.hero-glow {
-  position: absolute;
-  top: -30%; right: -8%;
-  width: 55%; aspect-ratio: 1;
-  background: radial-gradient(ellipse at center, rgba(192, 58, 43, 0.18) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-inner {
-  padding: 5.5rem 1.25rem 3.5rem;
-  text-align: center;
-  position: relative;
-  animation: fadeUp 0.65s 0.2s var(--ease) both;
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: none; }
-}
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.875rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--accent);
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  margin-bottom: 1.25rem;
-}
-.eyebrow-rule { display: block; width: 28px; height: 1px; background: currentColor; opacity: 0.65; }
-.hero h1 { color: #fff; font-size: clamp(2.75rem, 6vw, 4.25rem); margin-bottom: 0.875rem; font-weight: 600; }
-.lead { color: rgba(255, 255, 255, 0.8); max-width: 60ch; margin: 0 auto 2.25rem; font-size: 1.1rem; }
-.cta { display: flex; gap: 0.875rem; justify-content: center; flex-wrap: wrap; }
-.btn-primary {
-  background: var(--accent);
-  color: #ffffff;
-  padding: 0.9rem 1.85rem;
-  border-radius: var(--radius);
-  font-weight: 600;
-  font-size: 0.95rem;
-  letter-spacing: 0.02em;
-  box-shadow: 0 4px 16px rgba(192, 58, 43, 0.38);
-  transition: filter var(--dur) var(--ease), transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
-}
-.btn-primary:hover { filter: brightness(1.08); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(192, 58, 43, 0.5); }
-.btn-primary:active { transform: translateY(0); }
-.btn-line {
-  border: 1.5px solid rgba(255, 255, 255, 0.45);
-  color: #fff;
-  padding: 0.9rem 1.85rem;
-  border-radius: var(--radius);
-  font-weight: 500;
-  font-size: 0.95rem;
-  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
-}
-.btn-line:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.75); }
-
-/* hero stats bar */
-.hero-stats-bar {
-  background: rgba(0, 0, 0, 0.22);
-  backdrop-filter: blur(6px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
-  animation: fadeUp 0.65s 0.7s var(--ease) both;
-}
-.hero-stats-inner {
-  display: flex;
-  justify-content: center;
-  gap: 3.5rem;
-  padding: 1.35rem 1.25rem;
-}
-.hero-stat { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
-.hero-stat strong {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--accent);
-  line-height: 1;
-}
-.hero-stat span { font-size: 0.75rem; letter-spacing: 0.07em; color: rgba(255, 255, 255, 0.65); text-transform: uppercase; }
-
-/* ─── Checklist ─── */
-.checklist { display: flex; flex-direction: column; margin-top: 0.5rem; }
-.checklist li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  padding: 0.55rem 0;
-  color: var(--ink);
-  border-bottom: 1px solid var(--line);
-  line-height: 1.5;
-}
-.checklist li:last-child { border-bottom: none; }
-.checklist li::before {
-  content: '';
-  width: 22px; height: 22px;
-  flex-shrink: 0;
-  margin-top: 1px;
-  border-radius: 50%;
-  background:
-    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>")
-    center / 12px no-repeat var(--primary);
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .section { padding: 4.5rem 1.5rem; }
+  .tujuan-section { grid-template-columns: 1fr; gap: 3rem; }
+  .cards { grid-template-columns: 1fr 1fr; }
+  .benefits { grid-template-columns: 1fr 1fr; }
+  .register-container { grid-template-columns: 1fr; gap: 3rem; }
 }
 
-/* ─── Cards ─── */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-  margin-top: 2rem;
-}
-.card {
-  background: #fff;
-  border: 1px solid var(--line);
-  border-top: 3px solid var(--accent);
-  border-radius: var(--radius);
-  padding: 1.85rem 1.75rem;
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
-  cursor: default;
-}
-.card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
-.card-icon {
-  width: 52px; height: 52px;
-  border-radius: 14px;
-  background: rgba(26, 58, 92, 0.07);
-  display: grid;
-  place-items: center;
-  margin-bottom: 1.1rem;
-  color: var(--primary);
-  transition: background var(--dur) var(--ease);
-}
-.card:hover .card-icon { background: rgba(26, 58, 92, 0.13); }
-.card-icon :deep(svg) { display: block; }
-.card h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
-.card p { color: var(--muted); margin: 0; font-size: 0.95rem; line-height: 1.55; }
-
-/* ─── Benefits ─── */
-.benefits {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.25rem 2.5rem;
-  margin-top: 2rem;
-}
-.benefit {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  padding: 0.75rem;
-  font-weight: 500;
-  border-radius: var(--radius-sm);
-  transition: background var(--dur) var(--ease);
-}
-.benefit:hover { background: var(--bg-soft); }
-.benefit-icon {
-  width: 38px; height: 38px;
-  border-radius: 10px;
-  background: rgba(192, 58, 43, 0.09);
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  color: var(--accent);
-}
-.benefit-icon :deep(svg) { display: block; }
-
-/* ─── Two col ─── */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
-
-/* ─── Timeline ─── */
-.timeline-wrap { margin-top: 2.5rem; }
-.timeline {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  list-style: none;
-  padding: 0; margin: 0;
-}
-.tl-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 0 0.5rem;
-  position: relative;
-}
-.tl-item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: 22px;
-  left: 50%;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(to right, rgba(26, 58, 92, 0.4), rgba(26, 58, 92, 0.08));
-  z-index: 0;
-}
-.tl-num {
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
-  display: grid;
-  place-items: center;
-  margin-bottom: 0.875rem;
-  box-shadow: 0 4px 14px rgba(29, 45, 68, 0.32);
-  position: relative; z-index: 1;
-}
-.tl-text {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--ink);
-  line-height: 1.45;
-  margin: 0;
-}
-
-/* ─── Register ─── */
-.register {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 3rem;
-  align-items: start;
-}
-.register-card {
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 2.25rem;
-  box-shadow: var(--shadow);
-}
-
-/* ─── Trust strip ─── */
-.trust-strip {
-  display: flex;
-  margin-top: 2rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-}
-.trust-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.1rem 0.75rem;
-  gap: 0.2rem;
-  border-right: 1px solid var(--line);
-}
-.trust-item:last-child { border-right: none; }
-.trust-item strong {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: var(--primary);
-  line-height: 1;
-}
-.trust-item span { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-
-/* ─── Footer ─── */
-.footer { background: var(--primary-dark); color: rgba(200, 215, 235, 0.85); }
-.foot-inner { display: flex; justify-content: space-between; gap: 2rem; padding: 3.5rem 1.25rem 2rem; flex-wrap: wrap; }
-.footer .brand { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: #fff; font-size: 1.5rem; letter-spacing: 0.1em; display: block; margin-bottom: 0.4rem; }
-.footer p { margin: 0.3rem 0; font-size: 0.9rem; }
-.foot-contact { text-align: right; }
-.copy { border-top: 1px solid rgba(255, 255, 255, 0.08); padding: 1.1rem 1.25rem; text-align: center; font-size: 0.82rem; color: rgba(255, 255, 255, 0.4); }
-
-/* ─── Responsive ─── */
-@media (max-width: 860px) {
+@media (max-width: 768px) {
   .hamburger { display: flex; }
   .links { display: none; }
-  .cards { grid-template-columns: 1fr; }
-  .benefits { grid-template-columns: 1fr; }
+  .hero-stats-inner { gap: 1rem; }
+  .hero-stat:not(:last-child)::after { display: none; }
   .two-col { grid-template-columns: 1fr; gap: 2rem; }
-  .register { grid-template-columns: 1fr; gap: 2rem; }
-  .foot-contact { text-align: left; }
-  .hero-stats-inner { gap: 2rem; }
-}
-
-@media (max-width: 640px) {
-  .section { padding: 3rem 1.25rem; }
-  .timeline { grid-template-columns: 1fr 1fr; }
+  .timeline { grid-template-columns: 1fr; gap: 2rem; }
   .tl-item::after { display: none; }
-  .trust-strip { flex-direction: column; }
-  .trust-item { border-right: none; border-bottom: 1px solid var(--line); }
-  .trust-item:last-child { border-bottom: none; }
-  .hero-stats-inner { gap: 1.25rem; }
-}
-
-@media (max-width: 420px) {
-  .timeline { grid-template-columns: 1fr; }
   .tl-item {
     flex-direction: row;
-    align-items: center;
     text-align: left;
-    gap: 1rem;
-    padding: 0.5rem 0;
+    gap: 1.5rem;
+    padding: 0;
   }
-  .tl-item::after { display: none; }
-  .tl-num { flex-shrink: 0; margin-bottom: 0; }
+  .tl-num-wrap {
+    margin-bottom: 0;
+  }
+  .foot-inner { flex-direction: column; gap: 2.5rem; }
+  .copy-inner { flex-direction: column; gap: 1rem; text-align: center; }
+}
+
+@media (max-width: 576px) {
+  .cards { grid-template-columns: 1fr; }
+  .benefits { grid-template-columns: 1fr; }
+  .hero-stats-bar { margin-top: 3rem; }
 }
 </style>

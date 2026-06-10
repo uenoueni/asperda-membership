@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ASPERDA Registration - Data Cabang</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#2a313d",
+                        "surface-container": "#e7eefe",
+                        "surface-container-highest": "#dce2f3",
+                        "on-surface-variant": "#43474e",
+                        "surface-variant": "#dce2f3",
+                        "surface-bright": "#f9f9ff",
+                        "on-surface": "#151c27",
+                        "surface-dim": "#d3daea",
+                        "primary-container": "#1e3a5f",
+                        "error-container": "#ffdad6",
+                        "background": "#f9f9ff",
+                        "secondary": "#0060ac",
+                        "outline": "#74777f",
+                        "on-secondary-container": "#003e73",
+                        "on-primary-fixed-variant": "#2d486d",
+                        "on-tertiary-fixed-variant": "#43474a",
+                        "surface-container-high": "#e2e8f8",
+                        "on-background": "#151c27",
+                        "surface-tint": "#455f87",
+                        "on-tertiary-fixed": "#181c1e",
+                        "on-tertiary-container": "#a0a4a6",
+                        "tertiary-fixed-dim": "#c3c7ca",
+                        "secondary-container": "#68abff",
+                        "primary-fixed-dim": "#adc8f5",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f0f3ff",
+                        "tertiary-fixed": "#e0e3e6",
+                        "secondary-fixed": "#d4e3ff",
+                        "tertiary": "#202427",
+                        "surface": "#f9f9ff",
+                        "on-secondary-fixed-variant": "#004883",
+                        "on-secondary-fixed": "#001c39",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-error-container": "#93000a",
+                        "primary": "#022448",
+                        "on-primary-fixed": "#001c3b",
+                        "tertiary-container": "#363a3c",
+                        "primary-fixed": "#d5e3ff",
+                        "inverse-primary": "#adc8f5",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#8aa4cf",
+                        "outline-variant": "#c4c6cf",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#a4c9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-gap": "1.25rem",
+                        "margin-desktop": "auto",
+                        "margin-mobile": "1rem",
+                        "section-gap": "2.5rem",
+                        "container-max-width": "800px",
+                        "form-padding": "2rem",
+                        "inline-gap": "1rem"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Manrope"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Manrope"],
+                        "headline-xl": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav-border {
+            border-right: 4px solid #0060ac;
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen flex flex-col md:flex-row">
+<!-- Sidebar Navigation Shell -->
+<aside class="hidden md:flex flex-col h-screen w-64 border-r border-outline-variant bg-surface-container-lowest sticky top-0">
+<div class="p-6">
+<h1 class="font-headline-md text-headline-md font-bold text-primary mb-1">Registrasi</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Step 2 of 4</p>
+</div>
+<nav class="flex-1 flex flex-col pt-4">
+<!-- Nav Item 1 -->
+<a class="flex items-center gap-3 text-on-surface-variant py-3 px-6 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">business</span>
+<span class="font-label-md text-label-md">Profil Perusahaan</span>
+</a>
+<!-- Nav Item 2 (Active) -->
+<a class="flex items-center gap-3 text-secondary font-bold border-r-4 border-secondary py-3 px-6 bg-surface-container scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">apartment</span>
+<span class="font-label-md text-label-md">Data Cabang</span>
+</a>
+<!-- Nav Item 3 -->
+<a class="flex items-center gap-3 text-on-surface-variant py-3 px-6 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">gavel</span>
+<span class="font-label-md text-label-md">Legalitas</span>
+</a>
+<!-- Nav Item 4 -->
+<a class="flex items-center gap-3 text-on-surface-variant py-3 px-6 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label-md text-label-md">Konfirmasi</span>
+</a>
+</nav>
+<div class="p-6 mt-auto">
+<div class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-low">
+<img alt="Company Logo" class="w-10 h-10 rounded-full object-cover" data-alt="A clean professional corporate company logo profile picture on a white background with a minimalist vector design representing a transport or logistics organization. The color scheme is deep navy blue and corporate grey, suggesting reliability and institutional trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDvJfYtdlf9glCyyRGMMGgeUw3MokngQhw6JHxh_tr0bd4qSl2rIeTK508Xi6oAT60HypHnhoXDhfP8LboUA9X36LEfcfMUVUZN-TVvh5GkARtKbPa33pIJoR7wlwXVB2dys8tMSm2H8ogdtqSplc7B3TlX_ukt_I6mSs6CuoXYasNyUi9gg2ORK15Pn6atqPe2NmZyMeo3CxMzOdV7TMJ0f1UmAw1w2q0VcwnGWqFvDbatWwtMBxdl4M9S3-rBFffXjWVscFrwK8"/>
+<div>
+<p class="font-label-md text-label-md text-on-surface">ASPERDA</p>
+<p class="font-body-sm text-[10px] text-on-surface-variant uppercase tracking-wider">Member ID: Pending</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto">
+<!-- Top App Bar (JSON Content) -->
+<header class="flex flex-col items-center justify-center p-6 w-full text-center bg-primary text-on-primary shadow-md rounded-t-lg">
+<div class="flex items-center w-full max-w-[800px] justify-between mb-4">
+<button class="material-symbols-outlined text-on-primary hover:bg-primary-container transition-colors p-2 rounded-full">arrow_back</button>
+<span class="text-headline-lg font-headline-lg font-bold text-on-primary tracking-widest uppercase">ASPERDA</span>
+<div class="w-10"></div> <!-- Spacer -->
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-primary">Lengkapi Data Keanggotaan</h2>
+</header>
+<div class="max-w-[800px] mx-auto py-10 px-4 md:px-0">
+<!-- Registration Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_20px_40px_rgba(0,0,0,0.05)] border border-outline-variant overflow-hidden">
+<!-- Stepper Progress (Desktop/Mobile) -->
+<div class="px-8 pt-8 pb-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="hidden sm:block font-label-md text-label-md text-secondary">Profil</div>
+</div>
+<div class="flex-1 h-[2px] bg-secondary mx-4"></div>
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold">2</div>
+<div class="hidden sm:block font-label-md text-label-md text-secondary">Cabang</div>
+</div>
+<div class="flex-1 h-[2px] bg-surface-container-highest mx-4"></div>
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-bold">3</div>
+<div class="hidden sm:block font-label-md text-label-md text-on-surface-variant">Legalitas</div>
+</div>
+<div class="flex-1 h-[2px] bg-surface-container-highest mx-4"></div>
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-bold">4</div>
+<div class="hidden sm:block font-label-md text-label-md text-on-surface-variant">Konfirmasi</div>
+</div>
+</div>
+<!-- Form Content -->
+<form class="p-8 space-y-section-gap">
+<!-- Section: Data Cabang -->
+<section class="space-y-stack-gap">
+<div class="border-b border-outline-variant pb-2">
+<h3 class="font-label-md text-label-md text-outline uppercase tracking-widest">DATA CABANG</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-gap">
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Nama Cabang / Kantor <span class="text-error">*</span></label>
+<input class="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all font-body-md text-body-md" placeholder="mis. Kantor Pusat Jakarta" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Provinsi <span class="text-error">*</span></label>
+<select class="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all font-body-md text-body-md bg-transparent">
+<option disabled="" selected="" value="">Pilih Provinsi</option>
+<option>DKI Jakarta</option>
+<option>Jawa Barat</option>
+<option>Jawa Tengah</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Kota / Kabupaten <span class="text-error">*</span></label>
+<select class="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all font-body-md text-body-md bg-transparent">
+<option disabled="" selected="" value="">Pilih Kota/Kab</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Kecamatan <span class="text-on-surface-variant/60">(opsional)</span></label>
+<select class="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all font-body-md text-body-md bg-transparent">
+<option disabled="" selected="" value="">Pilih Kecamatan</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Jumlah Unit Kendaraan <span class="text-error">*</span></label>
+<input class="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all font-body-md text-body-md" placeholder="mis. 5" type="number"/>
+</div>
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Alamat Lengkap <span class="text-error">*</span></label>
+<textarea class="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all font-body-md text-body-md resize-none" placeholder="Jl. Sudirman No. 10, RT 01/RW 02, Kelurahan..." rows="3"></textarea>
+</div>
+</div>
+</section>
+<!-- Section: Bank Info -->
+<section class="space-y-stack-gap">
+<div class="border-b border-outline-variant pb-2">
+<h3 class="font-label-md text-label-md text-outline uppercase tracking-widest">INFORMASI REKENING BANK</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-gap">
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Nama Bank <span class="text-error">*</span></label>
+<input class="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all font-body-md text-body-md" placeholder="mis. BCA, Mandiri, BRI" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Nomor Rekening <span class="text-error">*</span></label>
+<input class="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all font-body-md text-body-md" placeholder="Nomor rekening" type="text"/>
+</div>
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Nama Pemilik Rekening <span class="text-error">*</span></label>
+<input class="border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all font-body-md text-body-md" placeholder="Nama sesuai buku rekening" type="text"/>
+<p class="text-[11px] text-on-surface-variant italic mt-1">Rekening ini digunakan untuk proses refund jika pendaftaran tidak disetujui.</p>
+</div>
+</div>
+</section>
+<!-- Section: Documents -->
+<section class="space-y-stack-gap">
+<div class="border-b border-outline-variant pb-2">
+<h3 class="font-label-md text-label-md text-outline uppercase tracking-widest">DOKUMEN PENDUKUNG</h3>
+</div>
+<div class="flex flex-col gap-4">
+<label class="font-label-md text-label-md text-on-surface-variant">Upload Dokumen <span class="text-on-surface-variant/60">(opsional, maks 2 MB)</span></label>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-8 bg-surface-container-low flex flex-col items-center justify-center gap-3 group hover:border-secondary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-outline group-hover:text-secondary transition-colors">cloud_upload</span>
+<div class="text-center">
+<p class="font-label-md text-label-md text-on-surface">Klik untuk unggah atau seret file ke sini</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Format: PDF, JPG, PNG — maksimal 2 MB</p>
+</div>
+<input class="hidden" id="file-upload" type="file"/>
+<button class="mt-2 px-6 py-2 border border-secondary text-secondary font-label-md text-label-md rounded-lg hover:bg-secondary hover:text-white transition-all" onclick="document.getElementById('file-upload').click()" type="button">Pilih File</button>
+</div>
+</div>
+</section>
+<!-- Action Buttons -->
+<div class="pt-8 flex flex-col md:flex-row gap-4">
+<button class="w-full md:w-1/3 py-4 border border-outline text-primary font-bold rounded-lg hover:bg-surface-container transition-all active:scale-95" type="button">Kembali</button>
+<button class="w-full md:flex-1 py-4 bg-primary text-on-primary font-bold rounded-lg shadow-lg hover:bg-primary-container transition-all active:scale-95 duration-200" type="submit">Simpan &amp; Lanjutkan</button>
+</div>
+</form>
+</div>
+<!-- Footer Info -->
+<footer class="mt-12 text-center pb-10">
+<p class="font-body-sm text-body-sm text-on-surface-variant">© 2024 ASPERDA - Asosiasi Pengusaha Rental Daerah. Semua Hak Dilindungi.</p>
+<div class="flex justify-center gap-6 mt-4">
+<a class="font-label-sm text-label-sm text-secondary hover:underline" href="#">Syarat &amp; Ketentuan</a>
+<a class="font-label-sm text-label-sm text-secondary hover:underline" href="#">Kebijakan Privasi</a>
+<a class="font-label-sm text-label-sm text-secondary hover:underline" href="#">Pusat Bantuan</a>
+</div>
+</footer>
+</div>
+</main>
+<!-- Mobile Navigation Shell -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-around p-3 z-50">
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">business</span>
+<span class="text-[10px] font-label-sm">Profil</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">apartment</span>
+<span class="text-[10px] font-label-sm font-bold">Cabang</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">gavel</span>
+<span class="text-[10px] font-label-sm">Legal</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="text-[10px] font-label-sm">Konfirmasi</span>
+</div>
+</nav>
+<script>
+        // Simple form validation visual cues
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.querySelector('label').classList.add('text-secondary');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.querySelector('label').classList.remove('text-secondary');
+            });
+        });
+
+        // File upload simulation
+        const dropzone = document.querySelector('.group');
+        const fileInput = document.getElementById('file-upload');
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                const uploadText = dropzone.querySelector('p');
+                uploadText.textContent = `Terpilih: ${fileName}`;
+                uploadText.classList.add('text-secondary', 'font-bold');
+            }
+        });
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('border-secondary', 'bg-surface-container');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('border-secondary', 'bg-surface-container');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('border-secondary', 'bg-surface-container');
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                const fileName = e.dataTransfer.files[0].name;
+                const uploadText = dropzone.querySelector('p');
+                uploadText.textContent = `Terpilih: ${fileName}`;
+                uploadText.classList.add('text-secondary', 'font-bold');
+            }
+        });
+    </script>
+</body></html>

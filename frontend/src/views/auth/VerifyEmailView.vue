@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthApi } from '@/api/auth'
 
@@ -9,18 +9,56 @@ const authApi = useAuthApi()
 const email = route.query.email ?? ''
 const status = route.query.status ?? ''
 
-const resendDone = ref(false)
+const sendCount = ref(0)
+const cooldownSecs = ref(0)
 const resendError = ref('')
+let timer = null
+
+const MAX_RESEND = 2
+const COOLDOWN_DEFAULT = 300 // 5 menit antar kirim
+
+const canResend = computed(
+  () => sendCount.value < MAX_RESEND && cooldownSecs.value === 0 && !authApi.loading.value,
+)
+const limitReached = computed(() => sendCount.value >= MAX_RESEND && cooldownSecs.value === 0)
+
+function formatTime(s) {
+  const m = Math.floor(s / 60)
+  const sec = s % 60
+  return m > 0 ? `${m} mnt ${sec} dtk` : `${sec} dtk`
+}
+
+function startCooldown(seconds) {
+  cooldownSecs.value = seconds
+  clearInterval(timer)
+  timer = setInterval(() => {
+    if (cooldownSecs.value > 0) {
+      cooldownSecs.value--
+    } else {
+      clearInterval(timer)
+    }
+  }, 1000)
+}
 
 async function resend() {
   resendError.value = ''
   const { ok, error } = await authApi.resendVerification(email)
+
   if (ok) {
-    resendDone.value = true
+    sendCount.value++
+    if (sendCount.value < MAX_RESEND) {
+      startCooldown(COOLDOWN_DEFAULT)
+    }
+  } else if (error?.status === 429) {
+    const secs = error.retry_after ?? COOLDOWN_DEFAULT
+    startCooldown(secs)
+    resendError.value = error?.message ?? 'Terlalu banyak percobaan. Silakan tunggu.'
   } else {
     resendError.value = error?.message ?? 'Gagal mengirim ulang email.'
   }
 }
+
+onUnmounted(() => clearInterval(timer))
 </script>
 
 <template>
@@ -54,21 +92,33 @@ async function resend() {
           <p class="muted">Link berlaku 24 jam. Periksa folder <em>Spam</em> jika tidak muncul di inbox.</p>
         </template>
 
-        <!-- Resend -->
-        <template v-if="!resendDone">
-          <p v-if="resendError" class="err">{{ resendError }}</p>
+        <!-- Status kirim ulang -->
+        <p v-if="sendCount > 0 && !resendError" class="success">
+          Email verifikasi telah dikirim ulang ({{ sendCount }}/{{ MAX_RESEND }}).
+        </p>
+
+        <!-- Error -->
+        <p v-if="resendError" class="err">{{ resendError }}</p>
+
+        <!-- Tombol kirim ulang -->
+        <template v-if="email">
           <button
-            v-if="email"
-            :disabled="authApi.loading.value"
+            v-if="!limitReached"
+            :disabled="!canResend"
             @click="resend"
           >
             <svg v-if="authApi.loading.value" class="spinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true">
               <path d="M21 12a9 9 0 1 1-6.219-8.56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
             </svg>
-            {{ authApi.loading.value ? 'Mengirim…' : 'Kirim ulang email verifikasi' }}
+            <template v-if="authApi.loading.value">Mengirim…</template>
+            <template v-else-if="cooldownSecs > 0">Tunggu {{ formatTime(cooldownSecs) }}…</template>
+            <template v-else>{{ sendCount > 0 ? 'Kirim ulang lagi' : 'Kirim ulang email verifikasi' }}</template>
           </button>
+
+          <p v-else class="limit-msg">
+            Batas pengiriman tercapai ({{ MAX_RESEND }}×). Periksa folder Spam atau hubungi admin.
+          </p>
         </template>
-        <p v-else class="success">Email verifikasi telah dikirim ulang. Silakan cek inbox Anda.</p>
 
         <a href="/login" class="back">Kembali ke halaman login</a>
       </div>
@@ -123,6 +173,7 @@ p { margin: 0; font-size: 0.9rem; color: #374151; line-height: 1.55; }
 .muted { color: #9ca3af; font-size: 0.82rem; }
 .err { color: #c03a2b; font-size: 0.85rem; }
 .success { color: #16a34a; font-weight: 600; font-size: 0.9rem; }
+.limit-msg { color: #6b7280; font-size: 0.85rem; font-style: italic; }
 button {
   width: 100%;
   padding: 0.8rem;

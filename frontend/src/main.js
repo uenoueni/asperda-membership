@@ -3,5 +3,8 @@ import { createPinia } from 'pinia'
 import './style.css'
 import App from './App.vue'
 import router from './router'
+import { initCsrf } from '@/composables/useApi'
 
-createApp(App).use(createPinia()).use(router).mount('#app')
+initCsrf().then(() => {
+  createApp(App).use(createPinia()).use(router).mount('#app')
+})

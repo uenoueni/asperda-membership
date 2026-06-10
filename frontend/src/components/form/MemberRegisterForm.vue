@@ -12,9 +12,6 @@ const fields = [
   { key: 'rental_name', label: 'Nama Usaha Rental', type: 'text', placeholder: 'mis. CV Rental Jaya', col: 1 },
   { key: 'email', label: 'Email', type: 'email', placeholder: 'nama@email.com', col: 1 },
   { key: 'phone', label: 'Nomor Telepon', type: 'tel', placeholder: '08xxxxxxxxxx', col: 1 },
-  { key: 'bank_name', label: 'Nama Bank', type: 'text', placeholder: 'mis. BCA', col: 2 },
-  { key: 'bank_account_no', label: 'Nomor Rekening', type: 'text', placeholder: 'Nomor rekening', col: 2 },
-  { key: 'bank_account_name', label: 'Nama Pemilik Rekening', type: 'text', placeholder: 'Nama di buku rekening', col: 1 },
 ]
 
 const form = reactive(Object.fromEntries(fields.map((f) => [f.key, ''])))
@@ -33,14 +30,10 @@ function validate() {
   if (!form.phone.trim()) errors.phone = 'Nomor telepon wajib diisi.'
   else if (!/^(\+62|08)\d{7,13}$/.test(form.phone.replace(/[\s-]/g, '')))
     errors.phone = 'Gunakan format Indonesia (08… atau +62…).'
-  if (!form.bank_name.trim()) errors.bank_name = 'Nama bank wajib diisi.'
-  if (!form.bank_account_no.trim()) errors.bank_account_no = 'Nomor rekening wajib diisi.'
-  if (!form.bank_account_name.trim()) errors.bank_account_name = 'Nama pemilik rekening wajib diisi.'
   return Object.keys(errors).length === 0
 }
 
 async function submit() {
-  successMsg.value = ''
   if (!validate()) return
 
   const { ok, error } = await authApi.register({ ...form })
@@ -89,7 +82,7 @@ async function submit() {
       </svg>
       {{ authApi.loading.value ? 'Mengirim…' : 'Daftar Sekarang' }}
     </button>
-    <small class="note">Data rekening digunakan untuk proses refund bila pendaftaran tidak disetujui.</small>
+    <small class="note">Setelah verifikasi email, Anda akan melengkapi data cabang dan informasi rekening bank.</small>
   </form>
 </template>
 
